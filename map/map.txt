@@ -1,0 +1,25 @@
+http://localhost:8111/gamechat
+http://localhost:8111/hudmsg
+http://localhost:8111/indicators
+http://localhost:8111/map_info.json
+http://localhost:8111/map_obj.json
+http://localhost:8111/mission.json
+http://localhost:8111/state
+http://localhost:8111/map.img
+越南		MD5: a546079510cd41d19f5a26bbbc4e738d
+Vietnam		900 - 1500
+
+西奈半岛		MD5: 24a39808b80abe5359d23ec454ffb536
+SinaiPeninsula	700 - 1200
+
+戈兰高地		MD5: 166b151d03e6ecb507b0af3ba19583cf
+GolanHeights	1200 - 1600
+
+西班牙		MD5: 4c088fd502175f94fe1cf82a58135d82
+Spain		1200 - 1600
+
+比利牛斯山	MD5: d8997861e6b8bb555064bb554719a18b
+PyreneesMountains 3500 - 4000
+
+大都会		MD5: ed9014e03f959769e15f31bc263838a5
+BigCity		1600 - 2000

@@ -1,0 +1,12 @@
+越南
+Vietnam:h1=900,h2=1500,v1=5,v2=15,v3=20
+西奈半岛
+SinaiPeninsula:h1=700,h2=1200,v1=5,v2=15,v3=20
+戈兰高地
+GolanHeights:h1=1200,h2=1600,v1=5,v2=15,v3=20
+西班牙
+Spain:h1=1200,h2=1600,v1=5,v2=15,v3=20
+比利牛斯山
+PyreneesMountains:h1=3500,h2=4000,v1=5,v2=15,v3=20
+大都会		
+BigCity:h1=1600,h2=2000,v1=5,v2=15,v3=20

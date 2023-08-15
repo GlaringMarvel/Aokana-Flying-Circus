@@ -1,0 +1,4 @@
+get=0
+speed=900
+time=180
+up=3000
