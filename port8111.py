@@ -135,6 +135,8 @@ def get_indicators(url, *args):
 def get_compass():
     url = 'http://localhost:8111/indicators'
     compass = get_indicators(url, "compass")
+    if compass is None:
+        compass = 0
     return compass
 
 

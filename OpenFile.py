@@ -13,7 +13,7 @@ def read_file_and_extract_values(filename, patterns, default_values, value_descr
         match = re.search(pattern, content)
         if match:
             value = match.group(1)
-            extracted_value = int(value)
+            extracted_value = float(value)  # 修改：使用float()转换为浮点数类型
             extracted_values.append(extracted_value)
         else:
             print(f"{value_description}重置为默认值")
@@ -24,12 +24,12 @@ def read_file_and_extract_values(filename, patterns, default_values, value_descr
 
 def read_values():
     # 如果想要增加参数，那么这里需要增加字段
-    patterns = [r'flight_mode=(\d+)',
-                r'decelerate=(\d+)',
-                r'reorienting_direction=(\d+)',
-                r'infrared_decoy=(\d+)',
-                r'bombing_distance=(\d+)',
-                r'press_time=(\d+)']
+    patterns = [r'flight_mode=(\d+(\.\d+)?)',  # 修改：匹配整数或小数
+                r'decelerate=(\d+(\.\d+)?)',
+                r'reorienting_direction=(\d+(\.\d+)?)',
+                r'infrared_decoy=(\d+(\.\d+)?)',
+                r'bombing_distance=(\d+(\.\d+)?)',
+                r'press_time=(\d+(\.\d+)?)']
     # 如果想要增加参数，那么这里需要增加默认值
     default_values = [0.5, 0, 0.5, 10, 3, 5]
     # 如果想要增加参数，那么这里需要增加字段

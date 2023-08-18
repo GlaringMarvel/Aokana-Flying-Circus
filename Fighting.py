@@ -7,9 +7,9 @@ import numpy as np
 
 # 读取文件设置
 _, decelerate_distance, _, fox_two_distance, bombing_distance, _ = OpenFile.read_values()
-print(f"减速距离设置为：{decelerate_distance}")
-print(f"热诱抛洒距离设置为：{fox_two_distance}")
-print(f"战区剩余距离判断设置为：{bombing_distance}")
+print(f"减速距离设置为： {decelerate_distance} Km")
+print(f"热诱抛洒距离设置为： {fox_two_distance} Km")
+print(f"战区剩余距离判断设置为： {bombing_distance} Km")
 
 
 def getWin():

@@ -157,9 +157,9 @@ logger = setup_logger(log_file)
 
 # 获取data.txt中的设置
 get_delay, _, direction_delay, _, _, press_time = OpenFile.read_values()
-print(f"数据请求延时设置为：{get_delay}")
-print(f"方向调整延时设置为：{direction_delay}")
-print(f"投弹键剩余按压时间：{press_time}")
+print(f"数据请求延时设置为： {get_delay} s")
+print(f"方向调整延时设置为： {direction_delay} s")
+print(f"投弹键剩余按压时间： {press_time} s")
 
 # 容错冗余，提前设定变量
 h1 = 1000
@@ -377,7 +377,8 @@ while True:
                 if seconds_passed > press_time:  # 弹起投弹键
                     keyboard.release('u')
                     time_flag = 2  # 进入阶段二，飞向敌方机场
-                    if airbrake == 1:
+                    if airbrake > 50:
+                        time.sleep(0.1)
                         # 关闭减速板
                         keyboard_h()
                         print("关闭减速板")

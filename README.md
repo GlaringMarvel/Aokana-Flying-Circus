@@ -39,7 +39,7 @@ A:你说得对，但是呢，那个，就是……就是那个两个字的游戏
 重要的游戏，绝不能忘记的游戏
 
 Q:下载地址在哪？  
-A:看右边
+A:找到右边Releases
 
 Q:如果别人拿你的项目去卖钱怎么办？  
 T:In the event that someone appropriates your project for commercial purposes, what course of action should be taken?  
@@ -85,6 +85,7 @@ A:你先别急，下面会详细介绍
 ![窗口画面设置](https://github.com/GlaringMarvel/Aokana-Flying-Circus/blob/master/Setting/00.png)
 ![Example Image](https://github.com/GlaringMarvel/Aokana-Flying-Circus/blob/master/Setting/01.png)
 ![Example Image](https://github.com/GlaringMarvel/Aokana-Flying-Circus/blob/master/Setting/02.png)
+![Example Image](https://github.com/GlaringMarvel/Aokana-Flying-Circus/blob/master/Setting/03.png)
 ![Example Image](https://github.com/GlaringMarvel/Aokana-Flying-Circus/blob/master/Setting/05.png)
 
 ### 请务必使用我上传的按键设置并进行导入
