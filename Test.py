@@ -1,12 +1,8 @@
-import port8111
+import Fighting
 
-i = 0
-while True:
-    bombing_point = port8111.get_bombing_point_select(i)
-    if bombing_point:
-        print(f"战区：{i+1} 坐标：{bombing_point}")
-    else:
-        print("指定的 bombing_point 不存在")
-    i += 1
-    if i == 4:
-        i = 0
+player_coordinates = (0.380712, 0.76687)
+bombing_coordinates = (0.397752, 0.502876)
+angle_degrees, distance = Fighting.calculate_heading(player_coordinates, bombing_coordinates)
+print(f"角度 {angle_degrees} 距离 {distance}")
+x = distance * 13100
+print(x)

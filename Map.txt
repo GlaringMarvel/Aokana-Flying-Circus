@@ -19,4 +19,4 @@ PyreneesMountains:h1=3500,h2=4000,v1=5,v2=15,v3=20,number=1
 大都会		
 BigCity:h1=1600,h2=2000,v1=5,v2=15,v3=20,number=1
 阿富汗
-Afghanistan:h1=1600,h2=2000,v1=5,v2=15,v3=20,number=1
+Afghanistan:h1=7000,h2=8000,v1=5,v2=15,v3=20,number=1

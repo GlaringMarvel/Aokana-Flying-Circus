@@ -177,6 +177,7 @@ v1 = 5
 v2 = 15
 v3 = 20
 num = 1
+map_size = 65535
 
 # 设立判断标志
 flag = 0
@@ -239,8 +240,6 @@ while True:
             break
 
     # 非正常战斗状态判断循环
-    map_size = port8111.get_size()  # 获取地图大小
-    print(f"地图尺寸：{map_size}m")
     while flag > 5:
         x, y, center_x = GetWindow.window_found()
         # 寻找加入战斗（重生次数1），寻找加入战斗后的取消按钮，寻找死亡后返回基地按钮
@@ -287,6 +286,11 @@ while True:
             print(f"飞行高度区间: {h1}m - {h2}m, 最小爬升率: {v1}, 正常爬升率: {v2}, 最大爬升率: {v3}, 战区选择：{num}")
             flag = 12
 
+        # 获取地图大小
+        map_size = port8111.get_size()
+        print(f"地图尺寸：{map_size}m")
+
+        # ccrp判断标志
         ccrp_flag = 0
         # 飞行状态循环判断
         while True:
@@ -330,12 +334,10 @@ while True:
             if IAS > 500 and ccrp_flag == 0:
                 # 激活CCRP
                 # ccrp_start()
-                # ccrp_flag = 1           # ccrp已激活
-
+                ccrp_flag = 1           # ccrp已激活
                 frequency = 0
                 while frequency < num:      # 实现选择第几个战区
                     ccrp_start()
-                    ccrp_flag = 1
                     frequency += 1
                     time.sleep(0.5)
             elif ccrp_flag == 1:
