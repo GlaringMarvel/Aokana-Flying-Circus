@@ -151,7 +151,7 @@ def log_event(logger, event_name, message):
 
 
 # 鹞式发动机调整，防止烧坏
-def harrier():
+def harrier_engineer():
     keyboard.press('s')
     time.sleep(0.05)
     keyboard.release('s')
@@ -163,7 +163,6 @@ log_file = 'log.txt'
 logger = setup_logger(log_file)
 
 # 获取data.txt中的设置
-harrier = 0
 get_delay, _, direction_delay, _, _, press_time, harrier = OpenFile.read_values()
 print(f"数据请求延时设置为： {get_delay} s")
 print(f"方向调整延时设置为： {direction_delay} s")
@@ -181,6 +180,7 @@ num = 1
 
 # 设立判断标志
 flag = 0
+start_time = get_current_time()
 while True:
     # 获取窗口坐标
     x, y, center_x = GetWindow.window_found()
@@ -402,11 +402,11 @@ while True:
                     elif harrier == 1:
                         # 鹞式发动机调整
                         if throttle == 100:
-                            harrier()
+                            harrier_engineer()
                         elif throttle > 100:
-                            harrier()
+                            harrier_engineer()
                             time.sleep(0.5)
-                            harrier()
+                            harrier_engineer()
             time.sleep(direction_delay)
             # 记录关于投弹结束的判断事件的日志
             log_event(logger, '投弹结束', '进入第二个阶段')

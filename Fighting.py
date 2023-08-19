@@ -202,7 +202,7 @@ def heading_control(IAS, map_size, time_flag, num, fox_flag):
     if distance < fox_two_distance and fox_flag == 0:
         flag = 7    # 准备抛洒热诱
         return flag
-    if decelerate_distance != 0 and distance < decelerate_distance:
+    if decelerate_distance > 0 and distance < decelerate_distance:
         flag = 1    # 减速板打开
         return flag
     # 看小键盘，4左转，6右转

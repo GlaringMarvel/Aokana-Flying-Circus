@@ -1,5 +1,5 @@
 flight_mode=0.5
-decelerate=0
+decelerate=-1
 reorienting_direction=0.5
 infrared_decoy=10
 bombing_distance=3
