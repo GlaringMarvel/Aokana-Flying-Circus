@@ -6,7 +6,7 @@ import math
 import numpy as np
 
 # 读取文件设置
-_, decelerate_distance, _, fox_two_distance, bombing_distance, _ = OpenFile.read_values()
+_, decelerate_distance, _, fox_two_distance, bombing_distance, _, _ = OpenFile.read_values()
 print(f"减速距离设置为： {decelerate_distance} Km")
 print(f"热诱抛洒距离设置为： {fox_two_distance} Km")
 print(f"战区剩余距离判断设置为： {bombing_distance} Km")
@@ -164,10 +164,16 @@ def heading_control(IAS, map_size, time_flag, num, fox_flag):
         flag = 0  # 结束投弹
         return flag
     # 获得全部战区坐标和玩家坐标
-    player_coordinates, bombing_coordinates = port8111.get_bombing_point_coordinates()
-    # 获得第n个战区坐标
-    # n = num - 1
-    # bombing_coordinates = bombing_collection[n]
+    # player_coordinates, bombing_coordinates = port8111.get_bombing_point_coordinates()
+    while -1 < num < 5:
+        player_coordinates, bombing_coordinates = port8111.get_bombing_point_select(num-1)
+        if bombing_coordinates is None:
+            num -= 1
+        elif num == 0:
+            print("不存在战区")
+            break
+        elif bombing_coordinates is not None:
+            break
     # 计算目标航向和地图距离
     heading, map_distance = calculate_heading(player_coordinates, bombing_coordinates)
     # 获得飞机航向
@@ -200,10 +206,16 @@ def heading_control(IAS, map_size, time_flag, num, fox_flag):
         flag = 1    # 减速板打开
         return flag
     # 看小键盘，4左转，6右转
-    if -10 > delta >= -180:
+    if -15 > delta >= -180:
+        flag = 4444
+        return flag
+    elif 15 < delta < 180:
+        flag = 6666
+        return flag
+    elif -7 > delta > -15:
         flag = 444
         return flag
-    elif 10 < delta < 180:
+    elif 7 < delta < 15:
         flag = 666
         return flag
     elif -3 > delta > -7:

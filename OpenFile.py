@@ -29,15 +29,34 @@ def read_values():
                 r'reorienting_direction=(\d+(\.\d+)?)',
                 r'infrared_decoy=(\d+(\.\d+)?)',
                 r'bombing_distance=(\d+(\.\d+)?)',
-                r'press_time=(\d+(\.\d+)?)']
+                r'press_time=(\d+(\.\d+)?)',
+                r'Harrier=(\d+)']
     # 如果想要增加参数，那么这里需要增加默认值
-    default_values = [0.5, 0, 0.5, 10, 3, 5]
+    default_values = [0.5, 0, 0.5, 10, 3, 5, 0]
     # 如果想要增加参数，那么这里需要增加字段
-    value_descriptions = ["数据请求延时", "减速距离", "方位调整延时", "热诱抛洒距离", "战区剩余距离判断", "投弹键剩余按压时间"]
+    value_descriptions = ["数据请求延时",
+                          "减速距离",
+                          "方位调整延时",
+                          "热诱抛洒距离",
+                          "战区剩余距离判断",
+                          "投弹键剩余按压时间",
+                          "鹞式战机"]
 
     extracted_values = read_file_and_extract_values('Map.txt', patterns, default_values, value_descriptions)
     # 如果想要增加参数，那么下面需要增加变量
-    delay_time, distance, direction, fox_2, bombing_distance, press_time = extracted_values  # 解包操作
+    (delay_time,
+     distance,
+     direction,
+     fox_2,
+     bombing_distance,
+     press_time,
+     harrier) = extracted_values  # 解包操作
 
     # 如果想要增加参数，那么这里需要返回值
-    return delay_time, distance, direction, fox_2, bombing_distance, press_time
+    return (delay_time,
+            distance,
+            direction,
+            fox_2,
+            bombing_distance,
+            press_time,
+            harrier)

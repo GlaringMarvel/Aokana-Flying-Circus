@@ -150,16 +150,26 @@ def log_event(logger, event_name, message):
     logger.debug(f'[{event_name}] - {message}')
 
 
+# 鹞式发动机调整，防止烧坏
+def harrier():
+    keyboard.press('s')
+    time.sleep(0.05)
+    keyboard.release('s')
+
+
 # 设置日志文件路径
 log_file = 'log.txt'
 # 设置日志记录器
 logger = setup_logger(log_file)
 
 # 获取data.txt中的设置
-get_delay, _, direction_delay, _, _, press_time = OpenFile.read_values()
+harrier = 0
+get_delay, _, direction_delay, _, _, press_time, harrier = OpenFile.read_values()
 print(f"数据请求延时设置为： {get_delay} s")
 print(f"方向调整延时设置为： {direction_delay} s")
 print(f"投弹键剩余按压时间： {press_time} s")
+harrier = int(harrier)
+print(f"是否为鹞式战斗机： {harrier}")
 
 # 容错冗余，提前设定变量
 h1 = 1000
@@ -274,7 +284,7 @@ while True:
             print(f"节流阀：{throttle} 正在加力;")
             pushW()
             h1, h2, v1, v2, v3, num, _ = Map.foundMap()  # 地图识别
-            print(f"飞行高度区间: {h1}m - {h2}m, v1: {v1}, v2: {v2}, v3: {v3}")
+            print(f"飞行高度区间: {h1}m - {h2}m, 最小爬升率: {v1}, 正常爬升率: {v2}, 最大爬升率: {v3}, 战区选择：{num}")
             flag = 12
 
         ccrp_flag = 0
@@ -293,7 +303,7 @@ while True:
                         print(f"节流阀：{throttle} 正在加力;")
                         pushW()
                         h1, h2, v1, v2, v3, num, _ = Map.foundMap()  # 地图识别
-                        print(f"飞行高度区间: {h1}m - {h2}m, v1: {v1}, v2: {v2}, v3: {v3}")
+                        print(f"飞行高度区间: {h1}m - {h2}m, 最小爬升率: {v1}, 正常爬升率: {v2}, 最大爬升率: {v3}, 战区选择：{num}")
                         flag = 12
                 else:
                     print("载具不位于机场")
@@ -319,14 +329,15 @@ while True:
             # 开启CCRP
             if IAS > 500 and ccrp_flag == 0:
                 # 激活CCRP
-                ccrp_start()
-                ccrp_flag = 1           # ccrp已激活
-                # frequency = 0
-                # while frequency < num:      # 实现选择第几个战区
-                #     ccrp_start()
-                #     ccrp_flag = 1
-                #     frequency += 1
-                #     time.sleep(1)
+                # ccrp_start()
+                # ccrp_flag = 1           # ccrp已激活
+
+                frequency = 0
+                while frequency < num:      # 实现选择第几个战区
+                    ccrp_start()
+                    ccrp_flag = 1
+                    frequency += 1
+                    time.sleep(0.5)
             elif ccrp_flag == 1:
                 keyboard.press('u')     # 空格猴子
                 ccrp_flag = 2           # 已经开始按住投弹键
@@ -336,11 +347,17 @@ while True:
                 keyboard_event = Fighting.heading_control(IAS, map_size, time_flag, num, fox_2)
             elif time_flag == 2:  # 如果玩家完成投弹
                 keyboard_event = Fighting.enemy_airfield(map_size, airbrake)
-            if keyboard_event == 666:
+            if keyboard_event == 6666:
                 moveR(m=0.5)
                 print("航向修正：右")
-            elif keyboard_event == 444:
+            elif keyboard_event == 4444:
                 moveL(m=0.5)
+                print("航向修正：左")
+            elif keyboard_event == 666:
+                moveR(m=0.2)
+                print("航向修正：右")
+            elif keyboard_event == 444:
+                moveL(m=0.2)
                 print("航向修正：左")
             elif keyboard_event == 66:
                 moveR(m=0.05)
@@ -382,6 +399,14 @@ while True:
                         # 关闭减速板
                         keyboard_h()
                         print("关闭减速板")
+                    elif harrier == 1:
+                        # 鹞式发动机调整
+                        if throttle == 100:
+                            harrier()
+                        elif throttle > 100:
+                            harrier()
+                            time.sleep(0.5)
+                            harrier()
             time.sleep(direction_delay)
             # 记录关于投弹结束的判断事件的日志
             log_event(logger, '投弹结束', '进入第二个阶段')

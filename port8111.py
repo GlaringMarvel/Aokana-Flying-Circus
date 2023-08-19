@@ -150,3 +150,29 @@ def get_size():
     grid_size = data["grid_size"][0]
 
     return grid_size
+
+
+# 获得战区坐标和载具坐标(test)
+def get_bombing_point_select(index):
+    url = "http://localhost:8111/map_obj.json"
+    response = requests.get(url)  # 发送请求获取数据
+    data = response.json()
+    player_coordinates = (-1, -1)
+    bombing_points = []  # 存储所有的 bombing_point 坐标
+
+    # 寻找玩家坐标
+    for obj in data:
+        if obj["icon"] == "Player":
+            player_coordinates = (obj["x"], obj["y"])
+            break
+
+    # 寻找战区坐标
+    for obj in data:
+        if obj["icon"] == "bombing_point":
+            bombing_points.append((obj["x"], obj["y"]))
+
+    if index < len(bombing_points):
+        return player_coordinates, bombing_points[index]
+    else:
+        return player_coordinates, None
+

@@ -1,9 +1,10 @@
-flight_mode=0
+flight_mode=0.5
 decelerate=0
-reorienting_direction=0
+reorienting_direction=0.5
 infrared_decoy=10
 bombing_distance=3
 press_time=5
+Harrier=0
 #######################################################
 越南
 Vietnam:h1=900,h2=1500,v1=5,v2=15,v3=20,number=1
