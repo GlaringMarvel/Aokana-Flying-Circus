@@ -29,3 +29,6 @@ BigCity		1600 - 2000
 
 阿富汗		MD5: eeadce7b9a2be282c84bb72e982d0302
 Afghanistan	7000-8000
+
+洛基峡谷      MD5: 924d7cadb5bf24f243474386195251b7
+RockiesCanyon

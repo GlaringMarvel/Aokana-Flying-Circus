@@ -150,7 +150,7 @@ def log_event(logger, event_name, message):
     logger.debug(f'[{event_name}] - {message}')
 
 
-# 鹞式发动机调整，防止烧坏
+# 节流阀降低
 def harrier_engineer():
     keyboard.press('s')
     time.sleep(0.05)
@@ -163,12 +163,23 @@ log_file = 'log.txt'
 logger = setup_logger(log_file)
 
 # 获取data.txt中的设置
-get_delay, _, direction_delay, _, _, press_time, harrier = OpenFile.read_values()
+(get_delay, _,
+ direction_delay, _, _,
+ press_time,
+ harrier,
+ mode,
+ delay_takeoff,
+ speed_limit,
+ max_speed) = OpenFile.read_values()
 print(f"数据请求延时设置为： {get_delay} s")
 print(f"方向调整延时设置为： {direction_delay} s")
 print(f"投弹键剩余按压时间： {press_time} s")
-harrier = int(harrier)
 print(f"是否为鹞式战斗机： {harrier}")
+print(f"飞行模式： {mode}")
+print(f"延迟入场： {delay_takeoff}")
+print(f"限速开关： {speed_limit}")
+print(f"最大速度： {max_speed}")
+time.sleep(3)
 
 # 容错冗余，提前设定变量
 h1 = 1000
@@ -273,16 +284,19 @@ while True:
         # 记录循环结尾事件的日志
         log_event(logger, '非正常战斗状态判断循环', '第二段循环')
 
+    # 事件标志与热诱标志
+    time_flag = fox_2 = 0
+    # 获取当前时间
+    delay_start_time = get_current_time()
+
     # 战斗操作判断
-    time_flag = 0
-    fox_2 = 0
     while flag > 8:
         # 判断节流阀位置
         Vy, Hm, throttle, IAS, _ = port8111.getState()
         if throttle < 110 and 11 > flag > 8:
             print(f"节流阀：{throttle} 正在加力;")
             pushW()
-            h1, h2, v1, v2, v3, num, _ = Map.foundMap()  # 地图识别
+            h1, h2, v1, v2, v3, number, time, north_direction, south_direction = Map.foundMap()  # 地图识别
             print(f"飞行高度区间: {h1}m - {h2}m, 最小爬升率: {v1}, 正常爬升率: {v2}, 最大爬升率: {v3}, 战区选择：{num}")
             flag = 12
 
@@ -291,7 +305,11 @@ while True:
         print(f"地图尺寸：{map_size}m")
 
         # ccrp判断标志
-        ccrp_flag = 0
+        if delay_takeoff != 0:
+            ccrp_flag = -1
+        else:
+            ccrp_flag = 0
+
         # 飞行状态循环判断
         while True:
             Vy, Hm, throttle, IAS, airbrake = port8111.getState()
@@ -306,10 +324,11 @@ while True:
                     if throttle < 110 and flag == 10:
                         print(f"节流阀：{throttle} 正在加力;")
                         pushW()
-                        h1, h2, v1, v2, v3, num, _ = Map.foundMap()  # 地图识别
+                        h1, h2, v1, v2, v3, number, time, north_direction, south_direction = Map.foundMap()  # 地图识别
                         print(f"飞行高度区间: {h1}m - {h2}m, 最小爬升率: {v1}, 正常爬升率: {v2}, 最大爬升率: {v3}, 战区选择：{num}")
                         flag = 12
                 else:
+                    keyboard.release('u')
                     print("载具不位于机场")
                     flag = 6
                     break
@@ -344,11 +363,25 @@ while True:
                 keyboard.press('u')     # 空格猴子
                 ccrp_flag = 2           # 已经开始按住投弹键
 
+            # 如果开启限速
+            if speed_limit != 0:
+                if IAS > max_speed and airbrake < 1:
+                    keyboard_h()
+                elif IAS < (max_speed - 100) and airbrake > 99:
+                    keyboard_h()
+
             # 关于航向的控制（x轴）
-            if time_flag < 2:  # 如果玩家未完成投弹
+            if time_flag < 2 and ccrp_flag == 0:    # 如果玩家未完成投弹,并且非延迟入场
                 keyboard_event = Fighting.heading_control(IAS, map_size, time_flag, num, fox_2)
-            elif time_flag == 2:  # 如果玩家完成投弹
+            elif time_flag < 2 and ccrp_flag == -1:  # 如果玩家未完成投弹，并且开启延迟入场
+                ccrp_flag, keyboard_event = Fighting.delay_control(IAS, delay_start_time,
+                                                                   time, north_direction, south_direction)
+            elif time_flag == 2 and mode == 1:  # 如果玩家完成投弹,并且飞行模式为飞向对面机场
                 keyboard_event = Fighting.enemy_airfield(map_size, airbrake)
+            elif time_flag == 2 and mode == 2:  # 如果玩家完成投弹,并且飞行模式为逛街
+                keyboard_event = Fighting.go_shopping(map_size, time_flag, num)
+                if keyboard_event == 5:
+                    num += 1
             if keyboard_event == 6666:
                 moveR(m=0.5)
                 print("航向修正：右")

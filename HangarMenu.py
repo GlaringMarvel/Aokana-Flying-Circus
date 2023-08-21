@@ -10,7 +10,6 @@ def battle_found(x, y):
         return 0  # 返回值0，识别失败
 
 
-
 # 判断接下来机库内鼠标行动的依据
 def mouse_event():
     button_found = StateMachine.hangar_identify()

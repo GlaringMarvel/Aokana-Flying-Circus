@@ -13,6 +13,6 @@ def calculate_md5(file_path):
 
 
 # 示例用法
-file_path = 'map/Afghanistan.img'
+file_path = 'map/RockiesCanyon.img'
 md5_value = calculate_md5(file_path)
 print("MD5:", md5_value)

@@ -6,8 +6,8 @@ print("本软件完全开源免费，如果你是付费购买，请自行联系�
 print("项目地址：https://github.com/GlaringMarvel/Aokana-Flying-Circus")
 print("详情请看README.md")
 print("作者：天之川桔猫 ——BiliBili\n")
-print("请勿随意移动游戏窗口")
-time.sleep(5)
+print("请勿随意移动游戏窗口\n")
+time.sleep(3)
 
 
 # 寻找窗口

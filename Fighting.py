@@ -4,12 +4,20 @@ import OpenFile
 import port8111
 import math
 import numpy as np
+import  datetime
+# from simple_pid import PID
 
 # 读取文件设置
-_, decelerate_distance, _, fox_two_distance, bombing_distance, _, _ = OpenFile.read_values()
+_, decelerate_distance, _, fox_two_distance, bombing_distance, _, _, _, _, _, _ = OpenFile.read_values()
 print(f"减速距离设置为： {decelerate_distance} Km")
 print(f"热诱抛洒距离设置为： {fox_two_distance} Km")
 print(f"战区剩余距离判断设置为： {bombing_distance} Km")
+
+
+# 获取当前时间
+def get_current_time():
+    current_time = datetime.datetime.now()
+    return current_time
 
 
 def getWin():
@@ -155,25 +163,8 @@ def calculate_heading(player_coordinates, bombing_coordinates):
     return angle_degrees, distance
 
 
-# 航向控制
-def heading_control(IAS, map_size, time_flag, num, fox_flag):
-    if IAS < 500:
-        flag = 0  # 不适合调整航向
-        return flag
-    elif time_flag == 2:
-        flag = 0  # 结束投弹
-        return flag
-    # 获得全部战区坐标和玩家坐标
-    # player_coordinates, bombing_coordinates = port8111.get_bombing_point_coordinates()
-    while -1 < num < 5:
-        player_coordinates, bombing_coordinates = port8111.get_bombing_point_select(num-1)
-        if bombing_coordinates is None:
-            num -= 1
-        elif num == 0:
-            print("不存在战区")
-            break
-        elif bombing_coordinates is not None:
-            break
+# 距离和航向角计算
+def distance_delta(player_coordinates, bombing_coordinates, map_size):
     # 计算目标航向和地图距离
     heading, map_distance = calculate_heading(player_coordinates, bombing_coordinates)
     # 获得飞机航向
@@ -196,15 +187,9 @@ def heading_control(IAS, map_size, time_flag, num, fox_flag):
     print(f"战区坐标{bombing_coordinates},玩家坐标{player_coordinates},距离{distance}Km")
     print(f"目标航向{heading},飞机航向{compass},航向修正{delta}")
 
-    if distance < bombing_distance and time_flag == 0:
-        flag = 5    # 准备弹起投弹键
-        return flag
-    if distance < fox_two_distance and fox_flag == 0:
-        flag = 7    # 准备抛洒热诱
-        return flag
-    if decelerate_distance > 0 and distance < decelerate_distance:
-        flag = 1    # 减速板打开
-        return flag
+
+# 航向操作判断
+def delta_control(delta):
     # 看小键盘，4左转，6右转
     if -15 > delta >= -180:
         flag = 4444
@@ -230,6 +215,78 @@ def heading_control(IAS, map_size, time_flag, num, fox_flag):
     elif 0.3 < delta < 3:
         flag = 6
         return flag
+
+
+# 航向控制
+def heading_control(IAS, map_size, time_flag, num, fox_flag):
+    if IAS < 500:
+        flag = 0  # 不适合调整航向
+        return flag
+    elif time_flag == 2:
+        flag = 0  # 结束投弹
+        return flag
+    # 获得全部战区坐标和玩家坐标
+    # player_coordinates, bombing_coordinates = port8111.get_bombing_point_coordinates()
+    while -1 < num < 5:
+        player_coordinates, bombing_coordinates = port8111.get_bombing_point_select(num - 1)
+        if bombing_coordinates is None:
+            num -= 1
+        elif num == 0:
+            print("不存在战区")
+            break
+        elif bombing_coordinates is not None:
+            break
+
+    # 获得距离和航向角
+    distance, delta = decelerate_distance(player_coordinates, bombing_coordinates, map_size)
+
+    if distance < bombing_distance and time_flag == 0:
+        flag = 5  # 准备弹起投弹键
+        return flag
+    if distance < fox_two_distance and fox_flag == 0:
+        flag = 7  # 准备抛洒热诱
+        return flag
+    if decelerate_distance > 0 and distance < decelerate_distance:
+        flag = 1  # 减速板打开
+        return flag
+    else:
+        # 航向操作判断
+        flag = delta_control(delta)
+        return flag
+
+
+# 延迟入场
+def delay_control(IAS, delay_start_time, time, north_direction, south_direction):
+    if IAS < 500:
+        flag = 0  # 不适合调整航向
+        return flag
+
+    # 获得机场坐标和玩家坐标
+    friendly_airport, _, player_coordinates = port8111.get_coordinates()
+    # 计算位于哪里出生
+    airfield_x, airfield_y = friendly_airport
+    if airfield_y < 0.5:
+        heading = north_direction
+    else:
+        heading = south_direction
+
+    # 获得飞机航向
+    compass = port8111.get_compass()
+
+    # 计算航向修正
+    delta = heading - compass
+
+    # 航向操作判断
+    flag = delta_control(delta)
+    ccrp_flag = -1
+
+    # 计算时间差
+    now_time = get_current_time()
+    time_difference = now_time - delay_start_time
+    seconds_passed = time_difference.total_seconds()
+    if seconds_passed > time:
+        ccrp_flag = 0
+    return ccrp_flag, flag
 
 
 # 飞向对方机场
@@ -261,22 +318,81 @@ def enemy_airfield(map_size, airbrake):
     if distance < 15 and airbrake == 0:
         flag = 1  # 开启减速板
         return flag
-    # 看小键盘，4左转，6右转
-    if -10 > delta >= -180:
-        flag = 444
+    else:
+        # 航向操作判断
+        flag = delta_control(delta)
         return flag
-    elif 10 < delta < 180:
-        flag = 666
+
+
+# 逛街
+# 航向控制
+def go_shopping(map_size, time_flag, num):
+    # 获得全部战区坐标和玩家坐标
+    # player_coordinates, bombing_coordinates = port8111.get_bombing_point_coordinates()
+    while -1 < num < 5:
+        player_coordinates, bombing_coordinates = port8111.get_bombing_point_select(num)
+        if bombing_coordinates is None:
+            num -= 1
+        elif num == 0:
+            print("不存在战区")
+            break
+        elif bombing_coordinates is not None:
+            break
+
+    # 获得距离和航向角
+    distance, delta = decelerate_distance(player_coordinates, bombing_coordinates, map_size)
+
+    if distance < bombing_distance and time_flag == 0:
+        flag = 5  # 准备弹起投弹键
         return flag
-    elif -3 > delta > -7:
-        flag = 44
+    else:
+        # 航向操作判断
+        flag = delta_control(delta)
         return flag
-    elif 3 < delta < 7:
-        flag = 66
-        return flag
-    elif -0.3 > delta > -3:
-        flag = 4
-        return flag
-    elif 0.3 < delta < 3:
-        flag = 6
-        return flag
+
+# PID控制测试
+# def pid_control(h1, h2, Vy, Hm, throttle, IAS, ):
+#     from simple_pid import PID
+#
+#     # 设置PID控制器的参数
+#     Kp = 0.5  # 比例系数
+#     Ki = 0.1  # 积分系数
+#     Kd = 0.2  # 微分系数
+#
+#     # 设置目标飞行速度
+#     target_speed = 1000  # 假设目标速度为300
+#
+#     # 初始化PID控制器
+#     pid = PID(Kp, Ki, Kd, setpoint=target_speed)
+#
+#     # 设置节流阀控制范围
+#     throttle_min = 0  # 最小节流阀值
+#     throttle_max = 110  # 最大节流阀值
+#
+#     # 设置IAS与target_speed的差值范围
+#     error_threshold = 150
+#
+#     # 计算IAS与target_speed的差值
+#     error = IAS - target_speed
+#
+#     # 根据差值调整throttle_control
+#     if abs(error) > error_threshold:
+#         # 差值过大，加快调整速度
+#         throttle_control = pid(error)
+#     else:
+#         # 差值较小，放缓调整速度
+#         throttle_control = pid(error, dt=1)
+#
+#     # 限制throttle_control的取值范围
+#     throttle_control = max(min(throttle_control, 0.5), -0.5)
+#
+#     # 根据throttle_control设置节流阀
+#     if IAS < target_speed:
+#         # IAS小于target_speed，增加节流阀
+#         throttle = min(throttle + throttle_control, throttle_max)
+#     else:
+#         # IAS大于target_speed，减小节流阀
+#         throttle = max(throttle + throttle_control, throttle_min)
+#
+#     # 设置节流阀控制值
+#     set_throttle(throttle)

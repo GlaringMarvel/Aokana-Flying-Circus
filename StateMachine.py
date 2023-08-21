@@ -10,7 +10,7 @@ import Waiting
 # 初始判断
 # 死亡状态判定
 def declaration_death():
-    h1, h2, v1, v2, v3, _, map_found = Map.foundMap()
+    h1, h2, v1, v2, v3, _, map_found, _, _, _ = Map.foundMap()
     if map_found == 0:  # 判断地图，是否在战局内
         flag = 0  # 第一种情况，非战斗中
         return flag
