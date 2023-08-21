@@ -1,10 +1,14 @@
+import time
+
 from python_imagesearch.imagesearch import imagesearcharea  # 引入识图函数
 import pygetwindow
+import Map
 import OpenFile
 import port8111
 import math
 import numpy as np
 import datetime
+
 # from simple_pid import PID
 
 # 读取文件设置
@@ -184,7 +188,7 @@ def distance_delta(player_coordinates, bombing_coordinates, map_size):
     delta = round(delta, 3)
     heading = round(heading, 3)
     compass = round(compass, 3)
-    print(f"战区坐标{bombing_coordinates},玩家坐标{player_coordinates},距离{distance}Km")
+    print(f"目标坐标{bombing_coordinates},玩家坐标{player_coordinates},距离{distance}Km")
     print(f"目标航向{heading},飞机航向{compass},航向修正{delta}")
     return distance, delta
 
@@ -232,9 +236,10 @@ def heading_control(IAS, map_size, time_flag, num, fox_flag):
         player_coordinates, bombing_coordinates = port8111.get_bombing_point_select(num - 1)
         if bombing_coordinates is None:
             num -= 1
-        elif num == 0:
-            print("不存在战区")
-            break
+            if num < 0:
+                bombing_coordinates = (-1, -1)
+                print("不存在战区")
+                break
         elif bombing_coordinates is not None:
             break
 
@@ -359,30 +364,41 @@ def go_shopping(map_size, time_flag, num):
 
 
 # 坐标计算
-def calculate_point(x1, y1, angle, distance):
-    # 将角度转换为弧度制
-    angle_rad = math.radians(angle)
+def calculate_point(x1, y1, compass, distance):
+    if 180 > compass >= 0:  # 如果大于90小于180，例如120，那么等于正常的60度，如果是60，那么就是正常的120
+        compass = 180 - compass
+    elif 360 >= compass >= 180:
+        compass = 540 - compass
+    # 计算圆心角的弧度值
+    radians = compass * math.pi / 180
+    # 计算位移点的极坐标
+    r = distance
+    theta = math.pi / 2 - radians
+    # 计算位移点的直角坐标
+    x = r * math.cos(theta)
+    y = r * math.sin(theta)
 
-    # 计算坐标
-    x2 = x1 + distance * math.cos(angle_rad)
-    y2 = y1 + distance * math.sin(angle_rad)
+    x2 = x1 + x
+    y2 = y1 + y
 
     return x2, y2
 
 
 # 返回检查点计算
-def checkpoint(map_size):
-    distance1 = 5000 / map_size     # 检查点1
-    distance2 = 10000 / map_size    # 检查点2
-    distance3 = 15000 / map_size    # 检查点3
-    distance4 = 20000 / map_size    # 检查点4
-    # 获得机场朝向
-    airfield_compass = port8111.get_compass()
+def checkpoint(map_size, airfield_compass):
+    distance1 = 5000 / map_size  # 检查点1
+    distance2 = 10000 / map_size  # 检查点2
+    distance3 = 15000 / map_size  # 检查点3
+    distance4 = 20000 / map_size  # 检查点4
+
     # 获得机场坐标
     friendly_airport, _, _ = port8111.get_coordinates()
+    print(f"机场坐标{friendly_airport}")
     a1, a2 = friendly_airport
-    if airfield_compass > 180:
-        airfield_compass = - airfield_compass
+    # if airfield_compass > 180:
+    #     airfield_compass = - (180 - airfield_compass)
+    # else:
+    #     airfield_compass = 180 - airfield_compass
     dx1, dy1 = calculate_point(a1, a2, airfield_compass, distance1)
     checkpoint_1 = (dx1, dy1)
     dx2, dy2 = calculate_point(a1, a2, airfield_compass, distance2)
@@ -391,8 +407,318 @@ def checkpoint(map_size):
     checkpoint_3 = (dx3, dy3)
     dx4, dy4 = calculate_point(a1, a2, airfield_compass, distance4)
     checkpoint_4 = (dx4, dy4)
-    return checkpoint_1, checkpoint_2, checkpoint_3, checkpoint_4
+    print(f"检查点1{checkpoint_1}，检查点2{checkpoint_2}，检查点3{checkpoint_3}，检查点4{checkpoint_4}，")
+    return friendly_airport, checkpoint_1, checkpoint_2, checkpoint_3, checkpoint_4, airfield_compass
 
+
+# 返回机场
+# 航向控制
+def return_airport(flag, map_size, checkpoint_4):
+    # 获得机场坐标和玩家坐标
+    _, _, player_coordinates = port8111.get_coordinates()
+
+    # 获得距离和航向角
+    distance, delta = distance_delta(player_coordinates, checkpoint_4, map_size)
+
+    if distance < 5:
+        # 进入降落模式
+        keyboard_event = 0
+        flag = 21
+        return flag, keyboard_event
+    else:
+        # 航向操作判断
+        keyboard_event = delta_control(delta)
+        return flag, keyboard_event
+
+
+# 死亡判断
+def declaration_death(IAS, x, y, start_compass):
+    if IAS > 1:
+        flag = 0
+        return flag
+    h1, h2, v1, v2, v3, _, map_found, _, _, _ = Map.foundMap()
+    if map_found == 0:  # 判断地图，是否在战局内
+        flag = -1  # 第一种情况，非战斗中
+        return flag
+    elif map_found == 2:
+        flag = -1  # 第二种情况，正在加载，无法请求地图
+        return flag
+    else:
+        back_picture = back(x, y)  # 寻找死亡后返回基地按钮
+    if back_picture == 1:
+        flag = 1
+        return flag
+    compass = port8111.get_compass()
+    # 飞机出生
+    if 1 > (compass - start_compass) > -1:
+        flag = 2
+        return flag
+    # else:
+    #     time.sleep(35)
+    #     flag = -2
+    #     return flag
+
+# 返航飞控
+def land_controller(check_num, checkpoint_data, Vy, Hm, throttle, IAS, airbrake, airfield_height, end_land):
+    # 提取目标高度，目标速度
+    target_height, target_speed = checkpoint_data[check_num]
+    print(f"目标高度{target_height}，目标速度{target_speed}")
+    # 定义控制变量
+    throttle_control = 0  # 节流阀控制秒速,秒
+    airbrake_control = 0  # 减速板控制判断,-1(off)/0/1(on)
+    keyboard_event = 0  # 俯仰控制,秒
+
+    # 当速度 过快 时
+    if IAS > (target_speed + 100):
+        if throttle > 1 > airbrake:  # 如果节流阀未关闭，减速板未开启
+            throttle_control = -(throttle / 100)
+            airbrake_control = 1
+        elif throttle > 1 and airbrake > 75:  # 如果节流阀未关闭，减速板开启
+            throttle_control = -(throttle / 100)
+            airbrake_control = 0
+        elif throttle <= 1 and airbrake < 25:  # 如果节流阀关闭，减速板未开启
+            throttle_control = 0
+            airbrake_control = 1
+        elif throttle <= 1 and airbrake > 75:  # 如果节流阀关闭，减速板开启
+            throttle_control = 0
+            airbrake_control = 0
+    # 当速度 远不足 时
+    elif IAS < (target_speed - 100):
+        if throttle > 1 > airbrake:  # 如果节流阀未关闭，减速板未开启
+            throttle_control = (110 - throttle) / 100
+            airbrake_control = 0
+        elif throttle > 1 and airbrake > 75:  # 如果节流阀未关闭，减速板开启
+            throttle_control = (110 - throttle) / 100
+            airbrake_control = -1
+        elif throttle <= 1 and airbrake < 25:  # 如果节流阀关闭，减速板未开启
+            throttle_control = (110 - throttle) / 100
+            airbrake_control = 0
+        elif throttle <= 1 and airbrake > 75:  # 如果节流阀关闭，减速板开启
+            throttle_control = (110 - throttle) / 100
+            airbrake_control = -1
+    # 当速度 比较接近 并 大于 目标速度时
+    elif (target_speed + 100) > IAS > (target_speed + 50):
+        if throttle > 1 > airbrake:  # 如果节流阀未关闭，减速板未开启
+            if throttle > 50:  # 如果节流阀大于50%
+                throttle_control = -((throttle - 50) / 100)
+            else:
+                throttle_control = 0
+            airbrake_control = 1
+        elif throttle > 1 and airbrake > 75:  # 如果节流阀未关闭，减速板开启
+            if throttle > 50:  # 如果节流阀大于50%
+                throttle_control = -((throttle - 50) / 100)
+            else:
+                throttle_control = 0
+            airbrake_control = 0
+        elif throttle <= 1 and airbrake < 25:  # 如果节流阀关闭，减速板未开启
+            throttle_control = 0
+            airbrake_control = 1
+        elif throttle <= 1 and airbrake > 75:  # 如果节流阀关闭，减速板开启
+            throttle_control = 0
+            airbrake_control = 0
+    # 当速度 比较接近 并 小于 目标速度时
+    elif (target_speed - 100) < IAS < (target_speed - 50):
+        if throttle > 1 > airbrake:  # 如果节流阀未关闭，减速板未开启
+            if throttle > 75:  # 如果节流阀大于75%
+                throttle_control = (110 - throttle) / 100
+            else:
+                throttle_control = (75 - throttle) / 100
+                airbrake_control = 0
+        elif throttle > 1 and airbrake > 75:  # 如果节流阀未关闭，减速板开启
+            if throttle > 75:  # 如果节流阀大于75%
+                throttle_control = (110 - throttle) / 100
+            else:
+                throttle_control = (75 - throttle) / 100
+            airbrake_control = -1
+        elif throttle <= 1 and airbrake < 25:  # 如果节流阀关闭，减速板未开启
+            throttle_control = (75 - throttle) / 100
+            airbrake_control = 0
+        elif throttle <= 1 and airbrake > 75:  # 如果节流阀关闭，减速板开启
+            throttle_control = (75 - throttle) / 100
+            airbrake_control = -1
+    # 当速度 非常接近 并 大于 目标速度时
+    elif (target_speed + 50) > IAS > (target_speed + 25):
+        if throttle > 1 > airbrake:  # 如果节流阀未关闭，减速板未开启
+            if throttle > 30:  # 如果节流阀大于30%
+                throttle_control = -((throttle - 30) / 100)
+            else:
+                throttle_control = 0
+            airbrake_control = 1
+        elif throttle > 1 and airbrake > 75:  # 如果节流阀未关闭，减速板开启
+            if throttle > 30:  # 如果节流阀大于30%
+                throttle_control = -((throttle - 30) / 100)
+            else:
+                throttle_control = 0
+            airbrake_control = 0
+        elif throttle <= 1 and airbrake < 25:  # 如果节流阀关闭，减速板未开启
+            throttle_control = 0
+            airbrake_control = 1
+        elif throttle <= 1 and airbrake > 75:  # 如果节流阀关闭，减速板开启
+            throttle_control = 0
+            airbrake_control = 0
+    # 当速度 非常接近 并 小于 目标速度时
+    elif (target_speed - 100) < IAS < (target_speed - 50):
+        if throttle > 1 > airbrake:  # 如果节流阀未关闭，减速板未开启
+            if throttle > 30:  # 如果节流阀大于30%
+                throttle_control = (75 - throttle) / 100
+            else:
+                throttle_control = (30 - throttle) / 100
+                airbrake_control = 0
+        elif throttle > 1 and airbrake > 75:  # 如果节流阀未关闭，减速板开启
+            if throttle > 30:  # 如果节流阀大于30%
+                throttle_control = (75 - throttle) / 100
+            else:
+                throttle_control = (30 - throttle) / 100
+            airbrake_control = -1
+        elif throttle <= 1 and airbrake < 25:  # 如果节流阀关闭，减速板未开启
+            throttle_control = (30 - throttle) / 100
+            airbrake_control = 0
+        elif throttle <= 1 and airbrake > 75:  # 如果节流阀关闭，减速板开启
+            throttle_control = (30 - throttle) / 100
+            airbrake_control = -1
+
+    # Y轴俯仰控制
+    # 高度过高时
+    if Hm > (airfield_height + target_height + 100):
+        if Vy < -20:
+            keyboard_event = 0
+        elif -20 < Vy < -10:
+            keyboard_event = -0.01
+        elif -10 < Vy < 0:
+            keyboard_event = -0.025
+        elif Vy > 0:
+            keyboard_event = -0.05
+    # 高度过低时
+    elif Hm < (airfield_height + target_height - 100):
+        if Vy > 20:
+            keyboard_event = 0
+        elif 20 > Vy > 10:
+            keyboard_event = 0.01
+        elif 10 > Vy > 0:
+            keyboard_event = 0.025
+        elif Vy < 0:
+            keyboard_event = 0.05
+    # 高度比较接近，但是 较高 时
+    elif Hm > (airfield_height + target_height + 50):
+        if Vy < -25:
+            keyboard_event = 0.05
+        elif -25 < Vy < -20:
+            keyboard_event = 0.025
+        elif -20 < Vy < -15:
+            keyboard_event = 0.01
+        elif -15 < Vy < -10:
+            keyboard_event = 0
+        elif -10 < Vy < 0:
+            keyboard_event = -0.01
+        elif 0 < Vy < 10:
+            keyboard_event = -0.025
+        elif 10 < Vy:
+            keyboard_event = -0.05
+    # 高度比较接近，但是 较低 时
+    elif Hm < (airfield_height + target_height - 50):
+        if Vy > 25:
+            keyboard_event = -0.05
+        elif 25 > Vy > 20:
+            keyboard_event = -0.025
+        elif 20 > Vy > 15:
+            keyboard_event = -0.01
+        elif 15 > Vy > 10:
+            keyboard_event = 0
+        elif 10 > Vy > 0:
+            keyboard_event = 0.01
+        elif 0 > Vy > -10:
+            keyboard_event = 0.025
+        elif -10 > Vy:
+            keyboard_event = 0.05
+    # 高度非常接近，但是 较高 时
+    elif Hm > (airfield_height + target_height + 25):
+        if Vy < -25:
+            keyboard_event = 0.05
+        elif -25 < Vy < -20:
+            keyboard_event = 0.04
+        elif -20 < Vy < -15:
+            keyboard_event = 0.03
+        elif -15 < Vy < -10:
+            keyboard_event = 0.02
+        elif -10 < Vy < -end_land:
+            keyboard_event = 0.01
+        elif -end_land < Vy < 0:
+            keyboard_event = 0
+        elif 0 < Vy < end_land:
+            keyboard_event = -0.01
+        elif end_land < Vy < 10:
+            keyboard_event = -0.03
+    # 高度非常接近，但是 较低 时
+    elif Hm < (airfield_height + target_height - 25):
+        if Vy > 25:
+            keyboard_event = -0.05
+        elif 25 > Vy > 20:
+            keyboard_event = -0.04
+        elif 20 > Vy > 15:
+            keyboard_event = -0.03
+        elif 15 > Vy > 10:
+            keyboard_event = -0.02
+        elif 10 > Vy > end_land:
+            keyboard_event = -0.01
+        elif end_land > Vy > 0:
+            keyboard_event = 0
+        elif 0 > Vy > -end_land:
+            keyboard_event = 0.01
+        elif -end_land > Vy > -10:
+            keyboard_event = 0.03
+
+    return throttle_control, airbrake_control, keyboard_event
+
+
+# 返回机场
+# 检查点航向控制
+def return_checkpoint(check_num, checkpoint_collection, map_size):
+    # 获得机场坐标和玩家坐标
+    _, _, player_coordinates = port8111.get_coordinates()
+
+    # 获得检查点坐标
+    target_point = checkpoint_collection[check_num]
+
+    # 获得距离和航向角
+    distance, delta = distance_delta(player_coordinates, target_point, map_size)
+
+    move = 0
+    if distance < 1 and check_num > 0:
+        # 进入降落模式
+        keyboard_event = 0
+        check_num -= 1
+    elif check_num == 0:
+        keyboard_event = 0
+    else:
+        # 航向操作判断
+        keyboard_event = delta_control(delta)
+
+    if keyboard_event == 6666:
+        move = 0.5
+        print("航向修正：右")
+    elif keyboard_event == 4444:
+        move = -0.5
+        print("航向修正：左")
+    elif keyboard_event == 666:
+        move = 0.2
+        print("航向修正：右")
+    elif keyboard_event == 444:
+        move = -0.2
+        print("航向修正：左")
+    elif keyboard_event == 66:
+        move = 0.05
+        print("航向修正：右")
+    elif keyboard_event == 44:
+        move = -0.05
+        print("航向修正：左")
+    elif keyboard_event == 6:
+        move = 0.01
+        print("航向修正：右")
+    elif keyboard_event == 4:
+        move = -0.05
+        print("航向修正：左")
+
+    return check_num, move
 
 # PID控制测试
 # def pid_control(h1, h2, Vy, Hm, throttle, IAS, ):

@@ -132,7 +132,7 @@ Vietnam:h1=900,h2=1500,v1=5,v2=15,v3=20
 
 #### 注意！v1等数值是爬升率而不是爬升角度，就是你左边那一排高度变化的快慢，单位是m/s
 
-#### 关于飞机航向的说明
+### 关于飞机航向的说明
 ![Example Image](https://github.com/GlaringMarvel/Aokana-Flying-Circus/blob/master/Setting/map.png)
 ![Example Image](https://github.com/GlaringMarvel/Aokana-Flying-Circus/blob/master/Setting/compass.png)  
 延迟入场设置如图所示，这是一张经典的南北机场地图（东西机场就一个洛基峡谷），你可以直接把罗盘扔地图上，罗盘上的刻度方向，就代表你想飞的方向（你需要填的值）。  

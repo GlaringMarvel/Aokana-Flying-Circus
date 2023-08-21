@@ -150,11 +150,25 @@ def log_event(logger, event_name, message):
     logger.debug(f'[{event_name}] - {message}')
 
 
-# 节流阀降低
+# 鹞式节流阀降低
 def harrier_engineer():
     keyboard.press('s')
     time.sleep(0.05)
     keyboard.release('s')
+
+
+# 节流阀降低
+def throttle_pull(t):
+    keyboard.press('s')
+    time.sleep(t)
+    keyboard.release('s')
+
+
+# 节流阀升高
+def throttle_push(t):
+    keyboard.press('w')
+    time.sleep(t)
+    keyboard.release('w')
 
 
 # 设置日志文件路径
@@ -180,6 +194,11 @@ print(f"延迟入场： {delay_takeoff}")
 print(f"限速开关： {speed_limit}")
 print(f"最大速度： {max_speed}")
 time.sleep(3)
+if mode == 3:
+    checkpoint_zero = (0, 300)
+    checkpoint_four, checkpoint_three, checkpoint_two, checkpoint_one = OpenFile.read_land()
+    checkpoint_data = [checkpoint_zero, checkpoint_one, checkpoint_two, checkpoint_three, checkpoint_four]
+    print(f"检查点4：{checkpoint_four}，检查点3：{checkpoint_three}，检查点2：{checkpoint_two}，检查点1：{checkpoint_one}")
 
 # 容错冗余，提前设定变量
 h1 = 1000
@@ -251,7 +270,7 @@ while True:
             break
 
     # 非正常战斗状态判断循环
-    while flag > 5:
+    while 9 > flag > 5:
         x, y, center_x = GetWindow.window_found()
         # 寻找加入战斗（重生次数1），寻找加入战斗后的取消按钮，寻找死亡后返回基地按钮
         battle_state = StateMachine.battle_state()
@@ -285,14 +304,14 @@ while True:
         log_event(logger, '非正常战斗状态判断循环', '第二段循环')
 
     # 事件标志与热诱标志
-    time_flag = fox_2 = 0
+    start_compass = airfield_compass = time_flag = fox_2 = 0
     # 获取当前时间
     delay_start_time = get_current_time()
     # 防止checkpoint is None
     checkpoint_1 = checkpoint_2 = checkpoint_3 = checkpoint_4 = (0.5, 0.5)
 
     # 战斗操作判断
-    while flag > 8:
+    while 21 > flag > 8:
         # 判断节流阀位置
         Vy, Hm, throttle, IAS, _ = port8111.getState()
         if throttle < 110 and 11 > flag > 8:
@@ -388,6 +407,13 @@ while True:
                 keyboard_event = Fighting.go_shopping(map_size, time_flag, num)
                 if keyboard_event == 5:
                     num += 1
+            elif time_flag == 2 and mode == 3:  # 如果玩家完成投弹,并且飞行模式为返回机场
+                flag, keyboard_event = Fighting.return_airport(flag, map_size, checkpoint_4)
+                dh, _ = checkpoint_four
+                h1 = airfield_height + (dh - 100)
+                h2 = airfield_height + (dh + 100)
+                if flag == 21:
+                    break
             if keyboard_event == 6666:
                 moveR(m=0.5)
                 print("航向修正：右")
@@ -424,13 +450,17 @@ while True:
                 fox_two()
                 fox_2 = 1
                 print("开启热诱循环")
-            # 记录关于X轴控制的判断事件的日志
+            # 记录关于X轴控制的判断事件的日志.
             log_event(logger, 'X轴控制', '飞行状态控制')
 
-            # 计算出三个返航检查点
-            if IAS < 200:
-                checkpoint_1, checkpoint_2, checkpoint_3, checkpoint_4 = Fighting.checkpoint(map_size)
-
+            # 计算出5个返航检查点
+            if IAS < 200 and mode == 3:
+                start_compass = port8111.get_compass()
+                airfield_height = Hm
+                print(f"起飞航向{start_compass}，起飞高度{airfield_height}m")
+                (friendly_airport, checkpoint_1, checkpoint_2,
+                 checkpoint_3, checkpoint_4, airfield_compass) = Fighting.checkpoint(map_size, start_compass)
+                checkpoint_collection = [friendly_airport, checkpoint_1, checkpoint_2, checkpoint_3, checkpoint_4]
             # 计算经过的时间差
             if time_flag == 1:
                 end_time = get_current_time()
@@ -455,3 +485,79 @@ while True:
             time.sleep(direction_delay)
             # 记录关于投弹结束的判断事件的日志
             log_event(logger, '投弹结束', '进入第二个阶段')
+
+    # 自动降落
+    end_land = death_flag = 0
+    check_num = 4
+    checkpoint_data[0] = (airfield_height, 300)
+    # 返回机场
+    while flag > 20:
+        Vy, Hm, throttle, IAS, airbrake = port8111.getState()
+        print(f"空速：{IAS} 高度：{Hm} 爬升率：{Vy} 节流阀：{throttle}")
+        if IAS < 1 and (airfield_height - 1) < Hm < (airfield_height + 1):
+            throttle_pull(3)
+            time.sleep(35)
+            flag = 21
+            break
+        # 死亡判断
+        death_flag = Fighting.declaration_death(IAS, x, y, start_compass)
+        if death_flag == -1:
+            flag = 0
+            print("已结束")
+            break
+        elif death_flag == 1:
+            flag = 6
+            print("已死亡")
+            break
+        elif death_flag == 2:
+            flag = 10
+            throttle_pull(3)
+            time.sleep(3)
+            print("重生完毕")
+            break
+        # elif death_flag == -2:
+        #     flag = 21
+        #     throttle_pull(3)
+        #     break
+
+        # 节流阀，减速板，y轴控制
+        if 0 < check_num < 5:
+            end_land = 5
+        elif check_num == 0:
+            end_land = 3
+        elif check_num < 0:
+            throttle_control = airbrake_control = keyboard_event = 0
+            flag = 21
+            break
+        (throttle_control, airbrake_control,
+         keyboard_event) = Fighting.land_controller(check_num, checkpoint_data, Vy,
+                                                    Hm, throttle, IAS, airbrake, airfield_height, end_land)
+        if throttle_control > 0:
+            throttle_push(throttle_control)
+            print(f"增大节流阀{throttle_control*100}%")
+        elif throttle_control < 0:
+            throttle_pull(-throttle_control)
+            print(f"减小节流阀{(-throttle_control) * 100}%")
+        time.sleep(0.1)
+        if airbrake_control < 0 and airbrake > 75:
+            keyboard_h()
+            print("关闭减速板")
+        elif airbrake_control > 0 and airbrake < 25:
+            keyboard_h()
+            print("打开减速板")
+        time.sleep(0.1)
+        if keyboard_event > 0:
+            moveUp(keyboard_event)
+            print(f"抬头{keyboard_event}")
+        elif keyboard_event < 0:
+            moveDwon(-keyboard_event)
+            print(f"下压{-keyboard_event}")
+        time.sleep(0.1)
+
+        # 方位控制
+        check_num, keyboard_event = Fighting.return_checkpoint(check_num, checkpoint_collection, map_size)
+        if keyboard_event > 0:
+            moveR(keyboard_event)
+        elif keyboard_event < 0:
+            moveL(-keyboard_event)
+        time.sleep(0.1)
