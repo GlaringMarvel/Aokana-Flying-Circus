@@ -1,13 +1,13 @@
 import time  # 调用时间函数
 import logging
-import GetWindow    # 调用窗口索引
+import GetWindow  # 调用窗口索引
 import HangarMenu
-import pyautogui    # 调用鼠标移动
-import keyboard     # 调用键盘按键
+import pyautogui  # 调用鼠标移动
+import keyboard  # 调用键盘按键
 import StateMachine
-import port8111     # 调用8111端口
-import Fighting     # 调用战斗中图像识别
-import Map          # 地图识别
+import port8111  # 调用8111端口
+import Fighting  # 调用战斗中图像识别
+import Map  # 地图识别
 import OpenFile
 import datetime
 
@@ -288,6 +288,8 @@ while True:
     time_flag = fox_2 = 0
     # 获取当前时间
     delay_start_time = get_current_time()
+    # 防止checkpoint is None
+    checkpoint_1 = checkpoint_2 = checkpoint_3 = checkpoint_4 = (0.5, 0.5)
 
     # 战斗操作判断
     while flag > 8:
@@ -296,7 +298,7 @@ while True:
         if throttle < 110 and 11 > flag > 8:
             print(f"节流阀：{throttle} 正在加力;")
             pushW()
-            h1, h2, v1, v2, v3, number, time, north_direction, south_direction = Map.foundMap()  # 地图识别
+            h1, h2, v1, v2, v3, number, map_found, wait_time, north_direction, south_direction = Map.foundMap()  # 地图识别
             print(f"飞行高度区间: {h1}m - {h2}m, 最小爬升率: {v1}, 正常爬升率: {v2}, 最大爬升率: {v3}, 战区选择：{num}")
             flag = 12
 
@@ -324,8 +326,10 @@ while True:
                     if throttle < 110 and flag == 10:
                         print(f"节流阀：{throttle} 正在加力;")
                         pushW()
-                        h1, h2, v1, v2, v3, number, time, north_direction, south_direction = Map.foundMap()  # 地图识别
-                        print(f"飞行高度区间: {h1}m - {h2}m, 最小爬升率: {v1}, 正常爬升率: {v2}, 最大爬升率: {v3}, 战区选择：{num}")
+                        # 地图识别
+                        h1, h2, v1, v2, v3, number, map_found, wait_time, north_direction, south_direction = Map.foundMap()
+                        print(
+                            f"飞行高度区间: {h1}m - {h2}m, 最小爬升率: {v1}, 正常爬升率: {v2}, 最大爬升率: {v3}, 战区选择：{num}")
                         flag = 12
                 else:
                     keyboard.release('u')
@@ -353,29 +357,31 @@ while True:
             if IAS > 500 and ccrp_flag == 0:
                 # 激活CCRP
                 # ccrp_start()
-                ccrp_flag = 1           # ccrp已激活
+                ccrp_flag = 1  # ccrp已激活
                 frequency = 0
-                while frequency < num:      # 实现选择第几个战区
+                while frequency < num:  # 实现选择第几个战区
                     ccrp_start()
                     frequency += 1
                     time.sleep(0.5)
             elif ccrp_flag == 1:
-                keyboard.press('u')     # 空格猴子
-                ccrp_flag = 2           # 已经开始按住投弹键
+                keyboard.press('u')  # 空格猴子
+                ccrp_flag = 2  # 已经开始按住投弹键
 
             # 如果开启限速
             if speed_limit != 0:
                 if IAS > max_speed and airbrake < 1:
+                    print("开始减速")
                     keyboard_h()
                 elif IAS < (max_speed - 100) and airbrake > 99:
+                    print("恢复速度")
                     keyboard_h()
 
             # 关于航向的控制（x轴）
-            if time_flag < 2 and ccrp_flag == 0:    # 如果玩家未完成投弹,并且非延迟入场
+            if time_flag < 2 and ccrp_flag > -1:  # 如果玩家未完成投弹,并且非延迟入场
                 keyboard_event = Fighting.heading_control(IAS, map_size, time_flag, num, fox_2)
             elif time_flag < 2 and ccrp_flag == -1:  # 如果玩家未完成投弹，并且开启延迟入场
                 ccrp_flag, keyboard_event = Fighting.delay_control(IAS, delay_start_time,
-                                                                   time, north_direction, south_direction)
+                                                                   wait_time, north_direction, south_direction)
             elif time_flag == 2 and mode == 1:  # 如果玩家完成投弹,并且飞行模式为飞向对面机场
                 keyboard_event = Fighting.enemy_airfield(map_size, airbrake)
             elif time_flag == 2 and mode == 2:  # 如果玩家完成投弹,并且飞行模式为逛街
@@ -420,6 +426,10 @@ while True:
                 print("开启热诱循环")
             # 记录关于X轴控制的判断事件的日志
             log_event(logger, 'X轴控制', '飞行状态控制')
+
+            # 计算出三个返航检查点
+            if IAS < 200:
+                checkpoint_1, checkpoint_2, checkpoint_3, checkpoint_4 = Fighting.checkpoint(map_size)
 
             # 计算经过的时间差
             if time_flag == 1:

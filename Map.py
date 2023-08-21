@@ -39,9 +39,9 @@ def mapData(map_name):
                 v2 = int(values[3].split('=')[1])
                 v3 = int(values[4].split('=')[1])
                 number = int(values[5].split('=')[1])
-                time = int(values[5].split('=')[1])
-                north_direction = int(values[5].split('=')[1])
-                south_direction = int(values[5].split('=')[1])
+                time = int(values[6].split('=')[1])
+                north_direction = int(values[7].split('=')[1])
+                south_direction = int(values[8].split('=')[1])
                 return h1, h2, v1, v2, v3, number, time, north_direction, south_direction
         return None
 

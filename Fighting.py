@@ -4,7 +4,7 @@ import OpenFile
 import port8111
 import math
 import numpy as np
-import  datetime
+import datetime
 # from simple_pid import PID
 
 # 读取文件设置
@@ -186,6 +186,7 @@ def distance_delta(player_coordinates, bombing_coordinates, map_size):
     compass = round(compass, 3)
     print(f"战区坐标{bombing_coordinates},玩家坐标{player_coordinates},距离{distance}Km")
     print(f"目标航向{heading},飞机航向{compass},航向修正{delta}")
+    return distance, delta
 
 
 # 航向操作判断
@@ -238,7 +239,7 @@ def heading_control(IAS, map_size, time_flag, num, fox_flag):
             break
 
     # 获得距离和航向角
-    distance, delta = decelerate_distance(player_coordinates, bombing_coordinates, map_size)
+    distance, delta = distance_delta(player_coordinates, bombing_coordinates, map_size)
 
     if distance < bombing_distance and time_flag == 0:
         flag = 5  # 准备弹起投弹键
@@ -257,9 +258,10 @@ def heading_control(IAS, map_size, time_flag, num, fox_flag):
 
 # 延迟入场
 def delay_control(IAS, delay_start_time, time, north_direction, south_direction):
-    if IAS < 500:
-        flag = 0  # 不适合调整航向
-        return flag
+    flag = 0
+    ccrp_flag = -1
+    if IAS < 500:  # 不适合调整航向
+        return ccrp_flag, flag
 
     # 获得机场坐标和玩家坐标
     friendly_airport, _, player_coordinates = port8111.get_coordinates()
@@ -272,20 +274,25 @@ def delay_control(IAS, delay_start_time, time, north_direction, south_direction)
 
     # 获得飞机航向
     compass = port8111.get_compass()
-
     # 计算航向修正
     delta = heading - compass
 
     # 航向操作判断
     flag = delta_control(delta)
-    ccrp_flag = -1
+    delta = round(delta, 3)
+    heading = round(heading, 3)
+    compass = round(compass, 3)
+    print(f"玩家坐标：{player_coordinates}，飞机航向：{compass}，目标航向：{heading}，航向修正：{delta}")
 
     # 计算时间差
     now_time = get_current_time()
     time_difference = now_time - delay_start_time
     seconds_passed = time_difference.total_seconds()
+    seconds_passed = int(seconds_passed)
+    print(f"已经过 {seconds_passed} s，总延迟时间 {time} s")
     if seconds_passed > time:
         ccrp_flag = 0
+
     return ccrp_flag, flag
 
 
@@ -333,14 +340,14 @@ def go_shopping(map_size, time_flag, num):
         player_coordinates, bombing_coordinates = port8111.get_bombing_point_select(num)
         if bombing_coordinates is None:
             num -= 1
-        elif num == 0:
+        elif num == -1:
             print("不存在战区")
             break
         elif bombing_coordinates is not None:
             break
 
     # 获得距离和航向角
-    distance, delta = decelerate_distance(player_coordinates, bombing_coordinates, map_size)
+    distance, delta = distance_delta(player_coordinates, bombing_coordinates, map_size)
 
     if distance < bombing_distance and time_flag == 0:
         flag = 5  # 准备弹起投弹键
@@ -349,6 +356,43 @@ def go_shopping(map_size, time_flag, num):
         # 航向操作判断
         flag = delta_control(delta)
         return flag
+
+
+# 坐标计算
+def calculate_point(x1, y1, angle, distance):
+    # 将角度转换为弧度制
+    angle_rad = math.radians(angle)
+
+    # 计算坐标
+    x2 = x1 + distance * math.cos(angle_rad)
+    y2 = y1 + distance * math.sin(angle_rad)
+
+    return x2, y2
+
+
+# 返回检查点计算
+def checkpoint(map_size):
+    distance1 = 5000 / map_size     # 检查点1
+    distance2 = 10000 / map_size    # 检查点2
+    distance3 = 15000 / map_size    # 检查点3
+    distance4 = 20000 / map_size    # 检查点4
+    # 获得机场朝向
+    airfield_compass = port8111.get_compass()
+    # 获得机场坐标
+    friendly_airport, _, _ = port8111.get_coordinates()
+    a1, a2 = friendly_airport
+    if airfield_compass > 180:
+        airfield_compass = - airfield_compass
+    dx1, dy1 = calculate_point(a1, a2, airfield_compass, distance1)
+    checkpoint_1 = (dx1, dy1)
+    dx2, dy2 = calculate_point(a1, a2, airfield_compass, distance2)
+    checkpoint_2 = (dx2, dy2)
+    dx3, dy3 = calculate_point(a1, a2, airfield_compass, distance3)
+    checkpoint_3 = (dx3, dy3)
+    dx4, dy4 = calculate_point(a1, a2, airfield_compass, distance4)
+    checkpoint_4 = (dx4, dy4)
+    return checkpoint_1, checkpoint_2, checkpoint_3, checkpoint_4
+
 
 # PID控制测试
 # def pid_control(h1, h2, Vy, Hm, throttle, IAS, ):

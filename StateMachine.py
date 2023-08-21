@@ -17,7 +17,7 @@ def declaration_death():
     elif map_found == 2:
         flag = 1  # 第二种情况，正在加载，无法请求地图
         return flag
-    print(f"飞行高度区间: {h1}m - {h2}m, v1: {v1}, v2: {v2}, v3: {v3}")
+    print("地图已获取")
     _, _, throttle, IAS, _ = port8111.getState()
     if throttle == 0 and IAS < 100:  # 判断是否死亡
         flag = 2  # 第三种情况，等待起飞/死亡
