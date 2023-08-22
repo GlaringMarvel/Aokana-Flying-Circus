@@ -171,8 +171,15 @@ def get_bombing_point_select(index):
         if obj["icon"] == "bombing_point":
             bombing_points.append((obj["x"], obj["y"]))
 
-    if index < len(bombing_points):
-        return player_coordinates, bombing_points[index]
-    else:
-        return player_coordinates, None
+    # 如果地图上不存在战区
+    if len(bombing_points) == 0:
+        bombing_points.append((-1, -1))
+
+    if index > len(bombing_points):
+        index = len(bombing_points)
+    elif index < 0:
+        index = 0
+
+    return player_coordinates, bombing_points[index]
+
 

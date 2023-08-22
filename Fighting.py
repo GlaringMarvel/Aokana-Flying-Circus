@@ -386,29 +386,29 @@ def calculate_point(x1, y1, compass, distance):
 
 # 返回检查点计算
 def checkpoint(map_size, airfield_compass):
-    distance1 = 5000 / map_size  # 检查点1
+    # distance1 = 5000 / map_size  # 检查点1
     distance2 = 10000 / map_size  # 检查点2
-    distance3 = 15000 / map_size  # 检查点3
+    # distance3 = 15000 / map_size  # 检查点3
     distance4 = 20000 / map_size  # 检查点4
 
     # 获得机场坐标
-    friendly_airport, _, _ = port8111.get_coordinates()
-    print(f"机场坐标{friendly_airport}")
-    a1, a2 = friendly_airport
+    _, _, player_coordinates = port8111.get_coordinates()
+    print(f"机场坐标{player_coordinates}")
+    a1, a2 = player_coordinates
     # if airfield_compass > 180:
     #     airfield_compass = - (180 - airfield_compass)
     # else:
     #     airfield_compass = 180 - airfield_compass
-    dx1, dy1 = calculate_point(a1, a2, airfield_compass, distance1)
-    checkpoint_1 = (dx1, dy1)
+    # dx1, dy1 = calculate_point(a1, a2, airfield_compass, distance1)
+    # checkpoint_1 = (dx1, dy1)
     dx2, dy2 = calculate_point(a1, a2, airfield_compass, distance2)
     checkpoint_2 = (dx2, dy2)
-    dx3, dy3 = calculate_point(a1, a2, airfield_compass, distance3)
-    checkpoint_3 = (dx3, dy3)
+    # dx3, dy3 = calculate_point(a1, a2, airfield_compass, distance3)
+    # checkpoint_3 = (dx3, dy3)
     dx4, dy4 = calculate_point(a1, a2, airfield_compass, distance4)
     checkpoint_4 = (dx4, dy4)
-    print(f"检查点1{checkpoint_1}，检查点2{checkpoint_2}，检查点3{checkpoint_3}，检查点4{checkpoint_4}，")
-    return friendly_airport, checkpoint_1, checkpoint_2, checkpoint_3, checkpoint_4, airfield_compass
+    print(f"检查点2{checkpoint_2}，检查点4{checkpoint_4}，")
+    return player_coordinates, checkpoint_2, checkpoint_4, airfield_compass
 
 
 # 返回机场
@@ -458,8 +458,19 @@ def declaration_death(IAS, x, y, start_compass):
     #     flag = -2
     #     return flag
 
+
 # 返航飞控
-def land_controller(check_num, checkpoint_data, Vy, Hm, throttle, IAS, airbrake, airfield_height, end_land):
+def land_controller(airport_distance, checkpoint_data, Vy, Hm, throttle, IAS, airbrake, airfield_height, end_land):
+    if 20 < airport_distance:
+        check_num = 4
+    elif 15 < airport_distance <= 20:
+        check_num = 3
+    elif 10 < airport_distance <= 15:
+        check_num = 2
+    elif 5 < airport_distance <= 10:
+        check_num = 1
+    elif 0 < airport_distance <= 5:
+        check_num = 0
     # 提取目标高度，目标速度
     target_height, target_speed = checkpoint_data[check_num]
     print(f"目标高度{target_height}，目标速度{target_speed}")
@@ -483,7 +494,7 @@ def land_controller(check_num, checkpoint_data, Vy, Hm, throttle, IAS, airbrake,
             throttle_control = 0
             airbrake_control = 0
     # 当速度 远不足 时
-    elif IAS < (target_speed - 100):
+    elif IAS < (target_speed - 200):
         if throttle > 1 > airbrake:  # 如果节流阀未关闭，减速板未开启
             throttle_control = (110 - throttle) / 100
             airbrake_control = 0
@@ -517,24 +528,24 @@ def land_controller(check_num, checkpoint_data, Vy, Hm, throttle, IAS, airbrake,
             throttle_control = 0
             airbrake_control = 0
     # 当速度 比较接近 并 小于 目标速度时
-    elif (target_speed - 100) < IAS < (target_speed - 50):
+    elif (target_speed - 200) < IAS < (target_speed - 100):
         if throttle > 1 > airbrake:  # 如果节流阀未关闭，减速板未开启
-            if throttle > 75:  # 如果节流阀大于75%
-                throttle_control = (110 - throttle) / 100
-            else:
+            if throttle > 30:  # 如果节流阀大于30%
                 throttle_control = (75 - throttle) / 100
+            else:
+                throttle_control = (30 - throttle) / 100
                 airbrake_control = 0
         elif throttle > 1 and airbrake > 75:  # 如果节流阀未关闭，减速板开启
-            if throttle > 75:  # 如果节流阀大于75%
-                throttle_control = (110 - throttle) / 100
-            else:
+            if throttle > 30:  # 如果节流阀大于30%
                 throttle_control = (75 - throttle) / 100
+            else:
+                throttle_control = (30 - throttle) / 100
             airbrake_control = -1
         elif throttle <= 1 and airbrake < 25:  # 如果节流阀关闭，减速板未开启
-            throttle_control = (75 - throttle) / 100
+            throttle_control = (30 - throttle) / 100
             airbrake_control = 0
         elif throttle <= 1 and airbrake > 75:  # 如果节流阀关闭，减速板开启
-            throttle_control = (75 - throttle) / 100
+            throttle_control = (30 - throttle) / 100
             airbrake_control = -1
     # 当速度 非常接近 并 大于 目标速度时
     elif (target_speed + 50) > IAS > (target_speed + 25):
@@ -560,13 +571,13 @@ def land_controller(check_num, checkpoint_data, Vy, Hm, throttle, IAS, airbrake,
     elif (target_speed - 100) < IAS < (target_speed - 50):
         if throttle > 1 > airbrake:  # 如果节流阀未关闭，减速板未开启
             if throttle > 30:  # 如果节流阀大于30%
-                throttle_control = (75 - throttle) / 100
+                throttle_control = (50 - throttle) / 100
             else:
                 throttle_control = (30 - throttle) / 100
                 airbrake_control = 0
         elif throttle > 1 and airbrake > 75:  # 如果节流阀未关闭，减速板开启
             if throttle > 30:  # 如果节流阀大于30%
-                throttle_control = (75 - throttle) / 100
+                throttle_control = (50 - throttle) / 100
             else:
                 throttle_control = (30 - throttle) / 100
             airbrake_control = -1
@@ -671,27 +682,36 @@ def land_controller(check_num, checkpoint_data, Vy, Hm, throttle, IAS, airbrake,
 
 
 # 返回机场
-# 检查点航向控制
-def return_checkpoint(check_num, checkpoint_collection, map_size):
+# 距离计算
+def airfield_distance(player_coordinates, bombing_coordinates, map_size):
+    # 计算目标航向和地图距离
+    _, map_distance = calculate_heading(player_coordinates, bombing_coordinates)
+    # 计算实际距离
+    distance = (map_distance / 1000) * map_size
+    return distance
+
+
+# 返航航向计算
+def return_checkpoint(checkpoint_collection, map_size):
+    check_num = 0
     # 获得机场坐标和玩家坐标
     _, _, player_coordinates = port8111.get_coordinates()
-
+    # 获得机场坐标
+    airfield_point = checkpoint_collection[0]
+    # 获得机场剩余距离
+    airport_distance = airfield_distance(player_coordinates, airfield_point, map_size)
+    if 10 < airport_distance <= 25:
+        check_num = 1
+    elif airport_distance <= 10:
+        check_num = 0
     # 获得检查点坐标
     target_point = checkpoint_collection[check_num]
-
     # 获得距离和航向角
     distance, delta = distance_delta(player_coordinates, target_point, map_size)
 
     move = 0
-    if distance < 1 and check_num > 0:
-        # 进入降落模式
-        keyboard_event = 0
-        check_num -= 1
-    elif check_num == 0:
-        keyboard_event = 0
-    else:
-        # 航向操作判断
-        keyboard_event = delta_control(delta)
+    # 航向操作判断
+    keyboard_event = delta_control(delta)
 
     if keyboard_event == 6666:
         move = 0.5
@@ -718,7 +738,7 @@ def return_checkpoint(check_num, checkpoint_collection, map_size):
         move = -0.05
         print("航向修正：左")
 
-    return check_num, move
+    return move, airport_distance
 
 # PID控制测试
 # def pid_control(h1, h2, Vy, Hm, throttle, IAS, ):
