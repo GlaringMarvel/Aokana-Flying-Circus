@@ -196,10 +196,10 @@ print(f"最大速度： {max_speed}")
 time.sleep(3)
 
 # 读取自动降落数据
+checkpoint_zero = (0, 300)
+checkpoint_four, checkpoint_three, checkpoint_two, checkpoint_one = OpenFile.read_land()
+checkpoint_data = [checkpoint_zero, checkpoint_one, checkpoint_two, checkpoint_three, checkpoint_four]
 if mode == 3:
-    checkpoint_zero = (0, 300)
-    checkpoint_four, checkpoint_three, checkpoint_two, checkpoint_one = OpenFile.read_land()
-    checkpoint_data = [checkpoint_zero, checkpoint_one, checkpoint_two, checkpoint_three, checkpoint_four]
     print(f"检查点4：{checkpoint_four}，检查点3：{checkpoint_three}，检查点2：{checkpoint_two}，检查点1：{checkpoint_one}")
 
 # 容错冗余，提前设定变量
@@ -307,7 +307,7 @@ while True:
         log_event(logger, '非正常战斗状态判断循环', '第二段循环')
 
     # 事件标志与热诱标志
-    start_compass = airfield_compass = time_flag = fox_2 = 0
+    airfield_height = start_compass = airfield_compass = time_flag = fox_2 = 0
     # 获取当前时间
     delay_start_time = get_current_time()
     # 防止checkpoint is None
@@ -413,6 +413,8 @@ while True:
                 keyboard_event = Fighting.go_shopping(map_size, time_flag, num)
                 if keyboard_event == 5:
                     num -= 1
+                    if num == -1:
+                        num = 4
             elif time_flag == 2 and mode == 3:  # 如果玩家完成投弹,并且飞行模式为返回机场
                 flag, keyboard_event = Fighting.return_airport(flag, map_size, checkpoint_4)
                 dh, _ = checkpoint_four

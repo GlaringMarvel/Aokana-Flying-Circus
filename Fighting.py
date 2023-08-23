@@ -233,14 +233,14 @@ def heading_control(IAS, map_size, time_flag, num, fox_flag):
     # 获得全部战区坐标和玩家坐标
     # player_coordinates, bombing_coordinates = port8111.get_bombing_point_coordinates()
     while -1 < num < 5:
-        player_coordinates, bombing_coordinates = port8111.get_bombing_point_select(num - 1)
-        if bombing_coordinates is None:
+        player_coordinates, bombing_coordinates, amount = port8111.get_bombing_point_select(num - 1)
+        if (num - 1) > amount:
             num -= 1
             if num < 0:
                 bombing_coordinates = (-1, -1)
                 print("不存在战区")
                 break
-        elif bombing_coordinates is not None:
+        elif (num - 1) < amount:
             break
 
     # 获得距离和航向角
@@ -342,13 +342,14 @@ def go_shopping(map_size, time_flag, num):
     # 获得全部战区坐标和玩家坐标
     # player_coordinates, bombing_coordinates = port8111.get_bombing_point_coordinates()
     while -1 < num < 5:
-        player_coordinates, bombing_coordinates = port8111.get_bombing_point_select(num)
-        if bombing_coordinates is None:
+        player_coordinates, bombing_coordinates, amount = port8111.get_bombing_point_select(num - 1)
+        if (num - 1) > amount:
             num -= 1
-        elif num == -1:
-            print("不存在战区")
-            break
-        elif bombing_coordinates is not None:
+            if num < 0:
+                bombing_coordinates = (-1, -1)
+                print("不存在战区")
+                break
+        elif (num - 1) < amount:
             break
 
     # 获得距离和航向角

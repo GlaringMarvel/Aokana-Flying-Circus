@@ -104,4 +104,6 @@ def foundMap():
         h1, h2, v1, v2, v3, number, time, north_direction, south_direction = mapData('RockiesCanyon')
         return h1, h2, v1, v2, v3, number, map_found, time, north_direction, south_direction
     else:
+        print("不在地图库中")
+        h1, h2, v1, v2, v3, number, time, north_direction, south_direction = mapData('Others')
         return h1, h2, v1, v2, v3, number, map_found, time, north_direction, south_direction
