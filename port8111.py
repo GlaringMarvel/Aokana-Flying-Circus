@@ -2,6 +2,8 @@ import requests
 from urllib3.util.retry import Retry
 from requests.adapters import HTTPAdapter
 
+import OpenFile
+
 retry_strategy = Retry(
     total=3,  # 最大重试次数（包括第一次请求）
     backoff_factor=0.1,  # 重试之间的退避因子，用于计算重试之间的等待时间
@@ -14,6 +16,12 @@ adapter = HTTPAdapter(max_retries=retry_strategy)
 pool = requests.Session()
 pool.mount("http://", adapter)  # 创建了一个 Session 对象，并将适配器挂载到 http:// 前缀上
 
+# 设置请求模式
+mode = OpenFile.read_port()
+if mode == 1:
+    address = 'localhost'
+else:
+    address = '127.0.0.1'
 
 # 访问端口获取数据
 def getData(url, *args):
@@ -31,7 +39,7 @@ def getData(url, *args):
 
 # 获取飞行参数
 def getState():
-    url = 'http://localhost:8111/state'
+    url = 'http://' + address + ':8111/state'
     Vy, Hm, IAS, throttle, airbrake = getData(url, "Vy, m/s", "H, m", "IAS, km/h", "throttle 1, %", "airbrake, %")
     if Vy is None:
         Vy = 0
@@ -65,7 +73,7 @@ def extractPlayerCoordinates(data):
 
 # 获取双方机场坐标以及玩家坐标
 def get_coordinates():
-    url = "http://localhost:8111/map_obj.json"
+    url = 'http://' + address + ':8111/map_obj.json'
     response = pool.get(url)  # 使用连接池发送请求
     data = response.json()
     player_coordinates = (-1, -1)
@@ -98,7 +106,7 @@ def get_coordinates():
 
 # 获得战区坐标和载具坐标
 def get_bombing_point_coordinates():
-    url = "http://localhost:8111/map_obj.json"
+    url = 'http://' + address + ':8111//map_obj.json'
     response = pool.get(url)  # 使用连接池发送请求
     data = response.json()
     player_coordinates = (-1, -1)
@@ -133,7 +141,7 @@ def get_indicators(url, *args):
 
 # 获得飞机航向
 def get_compass():
-    url = 'http://localhost:8111/indicators'
+    url = 'http://' + address + ':8111/indicators'
     compass = get_indicators(url, "compass")
     if compass is None:
         compass = 0
@@ -142,7 +150,7 @@ def get_compass():
 
 # 获得地图大小
 def get_size():
-    url = "http://localhost:8111/map_info.json"
+    url = 'http://' + address + ':8111/map_info.json'
     response = pool.get(url)  # 使用连接池发送请求
     data = response.json()  # 解析 JSON 数据
 
@@ -154,7 +162,7 @@ def get_size():
 
 # 获得战区坐标和载具坐标(test)
 def get_bombing_point_select(index):
-    url = "http://localhost:8111/map_obj.json"
+    url = 'http://' + address + ':8111/map_obj.json'
     response = requests.get(url)  # 发送请求获取数据
     data = response.json()
     player_coordinates = (-1, -1)
@@ -184,5 +192,3 @@ def get_bombing_point_select(index):
         index = 0
 
     return player_coordinates, bombing_points[index], amount
-
-

@@ -1,14 +1,15 @@
-[数据请求延时]flight_mode=0
+[数据请求延时]flight_mode=0.5
 [减速距离]decelerate=-1
-[方位调整延时]reorienting_direction=0
+[方位调整延时]reorienting_direction=0.5
 [热诱抛洒距离]infrared_decoy=10
 [战区剩余距离判断]bombing_distance=3
 [投弹键剩余按压时间]press_time=5
 [鹞式战机]Harrier=0
 [飞行模式]Mode=3
 [延迟入场]delay_takeoff=0
-[限速]speed_limit=1
+[限速]speed_limit=0
 [最大速度]max_speed=1200
+[端口请求模式]port8111=2
 #############################################################################################################
 越南
 Vietnam:h1=900,h2=1500,v1=5,v2=15,v3=20,number=1,time=300,north_direction=150,south_direction=300
@@ -41,3 +42,5 @@ checkpoint_2_v=650
 
 checkpoint_1_h=300
 checkpoint_1_v=450
+
+checkpoint_0_v=300

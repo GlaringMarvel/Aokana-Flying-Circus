@@ -474,7 +474,7 @@ def land_controller(airport_distance, checkpoint_data, Vy, Hm, throttle, IAS, ai
         check_num = 0
     # 提取目标高度，目标速度
     target_height, target_speed = checkpoint_data[check_num]
-    print(f"目标高度{target_height}，目标速度{target_speed}")
+    print(f"目标高度{target_height + airfield_height}，目标速度{target_speed}")
     # 定义控制变量
     throttle_control = 0  # 节流阀控制秒速,秒
     airbrake_control = 0  # 减速板控制判断,-1(off)/0/1(on)
@@ -738,6 +738,10 @@ def return_checkpoint(checkpoint_collection, map_size):
     elif keyboard_event == 4:
         move = -0.05
         print("航向修正：左")
+
+    # 最后阶段不转向
+    if airport_distance < 1:
+        move = 0
 
     return move, airport_distance
 

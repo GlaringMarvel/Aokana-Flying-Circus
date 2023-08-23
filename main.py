@@ -197,10 +197,11 @@ time.sleep(3)
 
 # 读取自动降落数据
 checkpoint_zero = (0, 300)
-checkpoint_four, checkpoint_three, checkpoint_two, checkpoint_one = OpenFile.read_land()
+checkpoint_four, checkpoint_three, checkpoint_two, checkpoint_one, checkpoint_0_v = OpenFile.read_land()
 checkpoint_data = [checkpoint_zero, checkpoint_one, checkpoint_two, checkpoint_three, checkpoint_four]
 if mode == 3:
     print(f"检查点4：{checkpoint_four}，检查点3：{checkpoint_three}，检查点2：{checkpoint_two}，检查点1：{checkpoint_one}")
+    print(f"着陆速度：{checkpoint_0_v}")
 
 # 容错冗余，提前设定变量
 h1 = 1000
@@ -323,7 +324,7 @@ while True:
             (h1, h2, v1, v2, v3, number, map_found,
              wait_time, north_direction, south_direction) = Map.foundMap()  # 地图识别
             print(f"飞行高度区间: {h1}m - {h2}m, 最小爬升率: {v1}, 正常爬升率: {v2}, 最大爬升率: {v3}, 战区选择：{num}")
-            flag = 12
+            flag = 9
 
         # 获取地图大小
         map_size = port8111.get_size()
@@ -356,6 +357,9 @@ while True:
                             f"飞行高度区间: {h1}m - {h2}m, 最小爬升率: {v1}, 正常爬升率: {v2}, 最大爬升率: {v3}, 战区选择：{num}"
                         )
                         flag = 12
+                elif bollen == -1 and flag == 9:
+                    print("载具未出生")
+                    break
                 else:
                     keyboard.release('u')
                     print("载具不位于机场")
@@ -397,9 +401,11 @@ while True:
                 if IAS > max_speed and airbrake < 1:
                     print("开始减速")
                     keyboard_h()
+                    time.sleep(1)
                 elif IAS < (max_speed - 100) and airbrake > 99:
                     print("恢复速度")
                     keyboard_h()
+                    time.sleep(1)
 
             # 关于航向的控制（x轴）
             if time_flag < 2 and ccrp_flag > -1:  # 如果玩家未完成投弹,并且非延迟入场
@@ -500,14 +506,15 @@ while True:
     airport_distance = 25
     end_land = death_flag = 0
     # check_num = 3
-    checkpoint_data[0] = (airfield_height, 300)
+    checkpoint_data[0] = (0, checkpoint_0_v)
     # 返回机场
     while flag > 20:
         Vy, Hm, throttle, IAS, airbrake = port8111.getState()
         print(f"空速：{IAS} 高度：{Hm} 爬升率：{Vy} 节流阀：{throttle}")
         if IAS < 100 and (airfield_height - 10) < Hm < (airfield_height + 10):
             throttle_pull(3)
-            time.sleep(35)
+            print("等待修理")
+            time.sleep(40)
             flag = 6
             break
         # 死亡判断
@@ -552,9 +559,11 @@ while True:
         time.sleep(0.1)
         if airbrake_control < 0 and airbrake > 75:
             keyboard_h()
+            time.sleep(1)
             print("关闭减速板")
         elif airbrake_control > 0 and airbrake < 25:
             keyboard_h()
+            time.sleep(1)
             print("打开减速板")
         time.sleep(0.1)
         if keyboard_event > 0:
