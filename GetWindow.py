@@ -2,11 +2,13 @@ import time
 import pygetwindow as gw  # 引入包pygetwindow使用别名gw（getWindows）
 
 # 介绍
+print("运行时建议将游戏靠右，本窗口靠左，方便报错时候时发送截图排查\n")
+time.sleep(3)
 print("本软件完全开源免费，如果你是付费购买，请自行联系商家或者平台退款")
 print("项目地址：https://github.com/GlaringMarvel/Aokana-Flying-Circus")
 print("详情请看README.md")
 print("作者：天之川桔猫 ——BiliBili\n")
-print("请勿随意移动游戏窗口\n")
+print("请勿在打开脚本以后随意移动鼠标或点击\n")
 time.sleep(3)
 
 

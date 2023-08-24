@@ -1,7 +1,7 @@
 import requests
 from urllib3.util.retry import Retry
 from requests.adapters import HTTPAdapter
-
+import json
 import OpenFile
 
 retry_strategy = Retry(
@@ -22,6 +22,7 @@ if mode == 1:
     address = 'localhost'
 else:
     address = '127.0.0.1'
+
 
 # 访问端口获取数据
 def getData(url, *args):
@@ -150,12 +151,16 @@ def get_compass():
 
 # 获得地图大小
 def get_size():
-    url = 'http://' + address + ':8111/map_info.json'
-    response = pool.get(url)  # 使用连接池发送请求
-    data = response.json()  # 解析 JSON 数据
+    try:
+        url = 'http://' + address + ':8111/map_info.json'
+        response = pool.get(url)  # 使用连接池发送请求
+        data = response.json()  # 解析 JSON 数据
 
-    # 获取 "grid_size" 中的第一个数值
-    grid_size = data["grid_size"][0]
+        # 获取 "grid_size" 中的第一个数值
+        grid_size = data["grid_size"][0]
+    except (requests.RequestException, KeyError, IndexError):
+        # 捕获请求异常、KeyError（当"grid_size"不存在）和IndexError（当"grid_size"为空列表）异常
+        grid_size = 65535
 
     return grid_size
 
@@ -164,7 +169,15 @@ def get_size():
 def get_bombing_point_select(index):
     url = 'http://' + address + ':8111/map_obj.json'
     response = requests.get(url)  # 发送请求获取数据
-    data = response.json()
+
+    try:
+        data = response.json()
+    except json.JSONDecodeError as e:
+        # 处理JSONDecodeError异常
+        print("JSON解析错误:", e)
+        # 或者提供默认值
+        data = []
+
     player_coordinates = (-1, -1)
     bombing_points = []  # 存储所有的 bombing_point 坐标
 

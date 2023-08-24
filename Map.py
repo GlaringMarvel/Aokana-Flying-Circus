@@ -3,9 +3,14 @@ import hashlib
 
 
 def calculate_md5(file_data):
+    # try:
     md5_hash = hashlib.md5()
     md5_hash.update(file_data)
     return md5_hash.hexdigest()
+    # except Exception as e:
+    # # 在哈希计算过程中发生异常
+    # print("Hash calculation failed:", str(e))
+    # return None
 
 
 # 这些内容是校验MD5值

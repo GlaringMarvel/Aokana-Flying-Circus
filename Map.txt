@@ -43,4 +43,5 @@ checkpoint_2_v=650
 checkpoint_1_h=300
 checkpoint_1_v=450
 
+checkpoint_0_h=20
 checkpoint_0_v=300

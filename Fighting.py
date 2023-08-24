@@ -25,17 +25,17 @@ def get_current_time():
 
 
 def getWin():
-    x = 0
-    y = 0
-    window = pygetwindow.getWindowsWithTitle('War Thunder')[0]  # 寻找游戏窗口
-    x = window.left  # 窗口的左边界坐标
-    y = window.top  # 窗口的顶部边界坐标
+    try:
+        window = pygetwindow.getWindowsWithTitle('War Thunder')[0]  # 寻找游戏窗口
+        x = window.left  # 窗口的左边界坐标
+        y = window.top  # 窗口的顶部边界坐标
 
-    window_width, window_height = window.size
+        window_width, window_height = window.size
+        center_x = window.left + (window_width // 2)
+        return x, y, center_x
 
-    center_x = window.left + (window_width // 2)
-
-    return x, y, center_x
+    except IndexError:
+        print("未找到游戏窗口")
 
 
 def imgSearch(imgData, sx, sy, ex, ey):

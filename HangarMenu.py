@@ -3,12 +3,14 @@ import StateMachine
 
 
 def battle_found(x, y):
-    pos = imagesearcharea("image/HangarMenu/Battle.png", x + 400, y, x + 800, y + 300, precision=0.7)
+    pos = imagesearcharea("image/HangarMenu/Battle.png", x + 400, y, x + 800, y + 300, precision=0.9)
+    if pos[0] != -1:
+        return 1  # 返回值1，识别成功
+    pos = imagesearcharea("image/HangarMenu/Battle_1.png", x + 400, y, x + 800, y + 300, precision=0.9)
     if pos[0] != -1:
         return 1  # 返回值1，识别成功
     else:
         return 0  # 返回值0，识别失败
-
 
 # 判断接下来机库内鼠标行动的依据
 def mouse_event():

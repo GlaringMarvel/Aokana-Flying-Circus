@@ -10,6 +10,7 @@ import Fighting  # 调用战斗中图像识别
 import Map  # 地图识别
 import OpenFile
 import datetime
+import random
 
 
 # 鼠标单击事件
@@ -171,6 +172,15 @@ def throttle_push(t):
     keyboard.release('w')
 
 
+# 随机选择模式
+def random_mode(mode):
+    if mode == 4:
+        random_number = random.randint(1, 3)
+        return random_number
+    else:
+        return mode
+
+
 # 设置日志文件路径
 log_file = 'log.txt'
 # 设置日志记录器
@@ -196,12 +206,14 @@ print(f"最大速度： {max_speed}")
 time.sleep(3)
 
 # 读取自动降落数据
-checkpoint_zero = (0, 300)
-checkpoint_four, checkpoint_three, checkpoint_two, checkpoint_one, checkpoint_0_v = OpenFile.read_land()
+checkpoint_four, checkpoint_three, checkpoint_two, checkpoint_one, checkpoint_zero = OpenFile.read_land()
 checkpoint_data = [checkpoint_zero, checkpoint_one, checkpoint_two, checkpoint_three, checkpoint_four]
 if mode == 3:
-    print(f"检查点4：{checkpoint_four}，检查点3：{checkpoint_three}，检查点2：{checkpoint_two}，检查点1：{checkpoint_one}")
-    print(f"着陆速度：{checkpoint_0_v}")
+    print(f"检查点4：{checkpoint_four}，"
+          f"检查点3：{checkpoint_three}，"
+          f"检查点2：{checkpoint_two}，"
+          f"检查点1：{checkpoint_one}，"
+          f"着陆点：{checkpoint_zero}")
 
 # 容错冗余，提前设定变量
 h1 = 1000
@@ -273,6 +285,9 @@ while True:
             flag = 8  # 8 载具未出生
             break
 
+    # 随机模式
+    mode = random_mode(mode)
+
     # 非正常战斗状态判断循环
     while 9 > flag > 5:
         x, y, center_x = GetWindow.window_found()
@@ -282,6 +297,8 @@ while True:
             start_game_1(x, y)  # 点击加入战斗（重生次数1）
             flag = 9  # 9 载具未出生,但已点击加入
             print("加入战斗（重生次数1）")
+            # 我至今找不到扔炸弹的原因
+            keyboard.release('u')
         elif battle_state == 2:  # 寻找死亡后返回基地按钮
             back(x, y)
             flag = 0  # 10 已点击返回基地
@@ -324,7 +341,7 @@ while True:
             (h1, h2, v1, v2, v3, number, map_found,
              wait_time, north_direction, south_direction) = Map.foundMap()  # 地图识别
             print(f"飞行高度区间: {h1}m - {h2}m, 最小爬升率: {v1}, 正常爬升率: {v2}, 最大爬升率: {v3}, 战区选择：{num}")
-            flag = 9
+            flag = 12
 
         # 获取地图大小
         map_size = port8111.get_size()
@@ -506,7 +523,7 @@ while True:
     airport_distance = 25
     end_land = death_flag = 0
     # check_num = 3
-    checkpoint_data[0] = (0, checkpoint_0_v)
+    # checkpoint_data[0] = (0, checkpoint_0_v)
     # 返回机场
     while flag > 20:
         Vy, Hm, throttle, IAS, airbrake = port8111.getState()
@@ -552,7 +569,7 @@ while True:
                                                     Hm, throttle, IAS, airbrake, airfield_height, end_land)
         if throttle_control > 0:
             throttle_push(throttle_control)
-            print(f"增大节流阀{throttle_control*100}%")
+            print(f"增大节流阀{throttle_control * 100}%")
         elif throttle_control < 0:
             throttle_pull(-throttle_control)
             print(f"减小节流阀{(-throttle_control) * 100}%")

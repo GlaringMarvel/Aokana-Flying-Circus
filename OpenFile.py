@@ -96,9 +96,10 @@ def read_land():
                 r'checkpoint_2_v=(\d+)',
                 r'checkpoint_1_h=(\d+)',
                 r'checkpoint_1_v=(\d+)',
+                r'checkpoint_0_h=(\d+)',
                 r'checkpoint_0_v=(\d+)']
     # 如果想要增加参数，那么这里需要增加默认值
-    default_values = [1000, 900, 700, 700, 400, 500, 200, 300, 300]
+    default_values = [1000, 900, 700, 700, 400, 500, 200, 300, 0, 300]
     # 如果想要增加参数，那么这里需要增加字段
     value_descriptions = ["检查点4高度",
                           "检查点4速度",
@@ -108,6 +109,7 @@ def read_land():
                           "检查点2速度",
                           "检查点1高度",
                           "检查点1速度",
+                          "着陆高度",
                           "着陆速度"]
 
     extracted_values = read_file_and_extract_values('Map.txt', patterns, default_values, value_descriptions)
@@ -120,19 +122,21 @@ def read_land():
      checkpoint_2_v,
      checkpoint_1_h,
      checkpoint_1_v,
+     checkpoint_0_h,
      checkpoint_0_v) = extracted_values  # 解包操作
 
     checkpoint_four = (checkpoint_4_h, checkpoint_4_v)
     checkpoint_three = (checkpoint_3_h, checkpoint_3_v)
     checkpoint_two = (checkpoint_2_h, checkpoint_2_v)
     checkpoint_one = (checkpoint_1_h, checkpoint_1_v)
+    checkpoint_zero = (checkpoint_0_h, checkpoint_0_v)
 
     # 如果想要增加参数，那么这里需要返回值
     return (checkpoint_four,
             checkpoint_three,
             checkpoint_two,
             checkpoint_one,
-            checkpoint_0_v)
+            checkpoint_zero)
 
 
 # 端口请求模式读取
