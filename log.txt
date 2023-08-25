@@ -1,0 +1,22 @@
+ERROR:root:An exception occurred
+NoneType: None
+ERROR:root:Error[Time:2023-08-26 10:41:56]:
+NoneType: None
+ERROR:root:Error[Time:2023-08-26 10:44:16]:
+NoneType: None
+ERROR:root:Error[Time:2023-08-26 10:44:37]:
+NoneType: None
+ERROR:root:Error[Time:2023-08-26 10:52:56]:
+NoneType: None
+ERROR:root:Traceback (most recent call last):
+  File "C:\Users\Dell\Desktop\Bot\Aokana Flying Circus\main.py", line 265, in <module>
+    x, y, center_x = GetWindow.window_found()
+                     ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Dell\Desktop\Bot\Aokana Flying Circus\GetWindow.py", line 29, in window_found
+    window.activate()
+  File "C:\Users\Dell\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\pygetwindow\_pygetwindow_win.py", line 246, in activate
+    _raiseWithLastError()
+  File "C:\Users\Dell\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\pygetwindow\_pygetwindow_win.py", line 99, in _raiseWithLastError
+    raise PyGetWindowException('Error code from Windows: %s - %s' % (errorCode, _formatMessage(errorCode)))
+pygetwindow.PyGetWindowException: Error code from Windows: 0 - 操作成功完成。
+NoneType: None

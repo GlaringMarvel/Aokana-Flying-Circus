@@ -154,3 +154,35 @@ def read_port():
 
     # 如果想要增加参数，那么这里需要返回值
     return port8111
+
+
+# 控制调整
+def read_correct():
+    # 如果想要增加参数，那么这里需要增加字段
+    patterns = [r'y_correct_1=(\d+(\.\d+)?)',
+                r'y_correct_2=(\d+(\.\d+)?)',
+                r'x_correct_1=(\d+(\.\d+)?)',
+                r'x_correct_2=(\d+(\.\d+)?)',
+                r'x_correct_3=(\d+(\.\d+)?)',
+                r'x_correct_4=(\d+(\.\d+)?)']
+    # 如果想要增加参数，那么这里需要增加默认值
+    default_values = [0.05, 0.01, 0.5, 0.2, 0.05, 0.01]
+    # 如果想要增加参数，那么这里需要增加字段
+    value_descriptions = ["y_correct_1",
+                          "y_correct_2",
+                          "x_correct_1",
+                          "x_correct_2",
+                          "x_correct_3",
+                          "x_correct_4"]
+
+    extracted_values = read_file_and_extract_values('Map.txt', patterns, default_values, value_descriptions)
+    # 如果想要增加参数，那么下面需要增加变量
+    (y_correct_1,
+     y_correct_2,
+     x_correct_1,
+     x_correct_2,
+     x_correct_3,
+     x_correct_4) = extracted_values  # 解包操作
+
+    # 如果想要增加参数，那么这里需要返回值
+    return y_correct_1, y_correct_2, x_correct_1, x_correct_2, x_correct_3, x_correct_4

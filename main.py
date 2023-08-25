@@ -11,6 +11,8 @@ import Map  # 地图识别
 import OpenFile
 import datetime
 import random
+import sys
+import traceback
 
 
 # 鼠标单击事件
@@ -181,10 +183,29 @@ def random_mode(mode):
         return mode
 
 
-# 设置日志文件路径
-log_file = 'log.txt'
-# 设置日志记录器
-logger = setup_logger(log_file)
+# # 设置日志文件路径
+# log_file = 'log.txt'
+# # 设置日志记录器
+# logger = setup_logger(log_file)
+
+
+# 报错记录
+def custom_excepthook(exctype, value, tb):
+    # 获取当前时间
+    current_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    # 记录异常日志
+    logging.exception(f"Error[Time:{current_time}]:")
+    logging.exception(''.join(traceback.format_exception(exctype, value, tb)))
+    print("Error:", exctype, value)
+    # 等待用户输入或者进行其他处理
+    input("程序异常，报错已记录在 log.txt 中，按任意键关闭脚本")
+
+
+# 设置自定义的异常处理函数
+sys.excepthook = custom_excepthook
+
+# 初始化日志记录器
+logging.basicConfig(filename='log.txt', level=logging.ERROR)
 
 # 获取data.txt中的设置
 (get_delay, _,
@@ -215,6 +236,14 @@ if mode == 3:
           f"检查点1：{checkpoint_one}，"
           f"着陆点：{checkpoint_zero}")
 
+# 控制调整
+(y_correct_1,
+ y_correct_2,
+ x_correct_1,
+ x_correct_2,
+ x_correct_3,
+ x_correct_4) = OpenFile.read_correct()
+
 # 容错冗余，提前设定变量
 h1 = 1000
 h2 = 1500
@@ -227,6 +256,9 @@ map_size = 65535
 # 设立判断标志
 flag = 0
 start_time = get_current_time()
+
+# if __name__ == "__main__":
+
 # 主程序开始
 while True:
     # 获取窗口坐标
@@ -322,7 +354,7 @@ while True:
             else:
                 print("载具未出生")
         # 记录循环结尾事件的日志
-        log_event(logger, '非正常战斗状态判断循环', '第二段循环')
+        # log_event(logger, '非正常战斗状态判断循环', '第二段循环')
 
     # 事件标志与热诱标志
     airfield_height = start_compass = airfield_compass = time_flag = fox_2 = 0
@@ -384,20 +416,20 @@ while True:
                     break
             # 2为下压，8为抬头
             elif keyboard_event == 2:
-                moveDwon(m=0.01)
+                moveDwon(y_correct_2)
                 print("下降：小幅")
             elif keyboard_event == 22:
-                moveDwon(m=0.05)
+                moveDwon(y_correct_1)
                 print("下降：大幅")
             elif keyboard_event == 8:
-                moveUp(m=0.01)
+                moveUp(y_correct_2)
                 print("爬升：小幅")
             elif keyboard_event == 88:
-                moveUp(m=0.05)
+                moveUp(y_correct_1)
                 print("爬升：大幅")
             time.sleep(get_delay)
             # 记录关于y轴控制的判断事件的日志
-            log_event(logger, 'y轴控制', '飞行状态控制')
+            # log_event(logger, 'y轴控制', '飞行状态控制')
 
             # 开启CCRP
             if IAS > 500 and ccrp_flag == 0:
@@ -447,28 +479,28 @@ while True:
                     keyboard.release('u')
                     break
             if keyboard_event == 6666:
-                moveR(m=0.5)
+                moveR(x_correct_1)
                 print("航向修正：右")
             elif keyboard_event == 4444:
-                moveL(m=0.5)
+                moveL(x_correct_1)
                 print("航向修正：左")
             elif keyboard_event == 666:
-                moveR(m=0.2)
+                moveR(x_correct_2)
                 print("航向修正：右")
             elif keyboard_event == 444:
-                moveL(m=0.2)
+                moveL(x_correct_2)
                 print("航向修正：左")
             elif keyboard_event == 66:
-                moveR(m=0.05)
+                moveR(x_correct_3)
                 print("航向修正：右")
             elif keyboard_event == 44:
-                moveL(m=0.05)
+                moveL(x_correct_3)
                 print("航向修正：左")
             elif keyboard_event == 6:
-                moveR(m=0.01)
+                moveR(x_correct_4)
                 print("航向修正：右")
             elif keyboard_event == 4:
-                moveL(m=0.01)
+                moveL(x_correct_4)
                 print("航向修正：左")
             elif keyboard_event == 1 and airbrake == 0:  # 开启减速板
                 keyboard_h()
@@ -483,7 +515,7 @@ while True:
                 fox_2 = 1
                 print("开启热诱循环")
             # 记录关于X轴控制的判断事件的日志.
-            log_event(logger, 'X轴控制', '飞行状态控制')
+            # log_event(logger, 'X轴控制', '飞行状态控制')
 
             # 计算出3个返航检查点
             if IAS < 200 and mode == 3:
@@ -517,7 +549,7 @@ while True:
                             harrier_engineer()
             time.sleep(direction_delay)
             # 记录关于投弹结束的判断事件的日志
-            log_event(logger, '投弹结束', '进入第二个阶段')
+            # log_event(logger, '投弹结束', '进入第二个阶段')
 
     # 自动降落
     airport_distance = 25
@@ -598,3 +630,5 @@ while True:
         elif keyboard_event < 0:
             moveL(-keyboard_event)
         time.sleep(0.1)
+
+    # input("按任意键继续...")
