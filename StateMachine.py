@@ -59,6 +59,10 @@ def hangar_identify():
     if red_warning == 1:
         flag = 5  # 如果成员组锁定
         return flag
+    research = Back.img_research(x,y)
+    if research == 1:
+        flag = 7    # 研发按钮
+        return flag
     else:  # 如果全部无法识别，返回标志5
         flag = 6  # 需要Esc
         return flag

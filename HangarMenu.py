@@ -30,6 +30,9 @@ def mouse_event():
     elif button_found == 5:  # 成员组锁定
         event = 3
         return event
+    elif button_found == 7:     # 研发按钮
+        event = 5
+        return event
     else:  # 无法识别,Esc事件
         event = 4
         return event

@@ -64,3 +64,15 @@ def imgStart(x, y):
     imgData = "image/HangarMenu/Battle.png"
     bollen = imgSearch(imgData, sx, sy, ex, ey, precision)
     return bollen
+
+
+# 研发
+def img_research(x, y):
+    sx = x + 300
+    sy = y + 500
+    ex = x + 500
+    ey = y + 600
+    precision = 0.9
+    imgData = "image/Back/Research.png"
+    bollen = imgSearch(imgData, sx, sy, ex, ey, precision)
+    return bollen

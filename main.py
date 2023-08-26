@@ -183,6 +183,13 @@ def random_mode(mode):
         return mode
 
 
+# 研发按钮点击
+def research_click(x, y):
+    pyautogui.moveTo(x + 370, y + 575)
+    time.sleep(1)
+    click()
+
+
 # # 设置日志文件路径
 # log_file = 'log.txt'
 # # 设置日志记录器
@@ -299,6 +306,10 @@ while True:
                 esc()
                 print("Esc")
                 flag = 4  # 4 esc事件，需要重新判断是否可以加入战斗
+                time.sleep(1)
+            elif mouse_event == 5:  # 研发选项
+                research_click(x, y)
+                print("研发")
                 time.sleep(1)
             else:  # 防报错容错
                 print("机库鼠标事件未知")
