@@ -32,3 +32,13 @@ Afghanistan	7000-8000
 
 洛基峡谷      MD5: 924d7cadb5bf24f243474386195251b7
 RockiesCanyon
+
+{"type":"ground_model","color":"#174DFF","color[]":[23,77,255],"blink":0,"icon":"SPAA","icon_bg":"none","x":0.790347,"y":0.471530},
+{"type":"bombing_point","color":"#fa0C00","color[]":[250,12,0],"blink":0,"icon":"bombing_point","icon_bg":"none","x":0.553966,"y":0.625810},
+{"type":"defending_point","color":"#174DFF","color[]":[23,77,255],"blink":0,"icon":"defending_point","icon_bg":"none","x":0.632267,"y":0.532403},
+{"type":"bombing_point","color":"#fa0C00","color[]":[250,12,0],"blink":0,"icon":"bombing_point","icon_bg":"none","x":0.532402,"y":0.592989},
+{"type":"defending_point","color":"#174DFF","color[]":[23,77,255],"blink":0,"icon":"defending_point","icon_bg":"none","x":0.560082,"y":0.483987},
+{"type":"bombing_point","color":"#fa0C00","color[]":[250,12,0],"blink":0,"icon":"bombing_point","icon_bg":"none","x":0.501140,"y":0.550949},
+{"type":"defending_point","color":"#174DFF","color[]":[23,77,255],"blink":0,"icon":"defending_point","icon_bg":"none","x":0.543645,"y":0.473422},
+{"type":"bombing_point","color":"#fa0C00","color[]":[250,12,0],"blink":0,"icon":"bombing_point","icon_bg":"none","x":0.508574,"y":0.534223},
+{"type":"defending_point","color":"#174DFF","color[]":[23,77,255],"blink":0,"icon":"defending_point","icon_bg":"none","x":0.622219,"y":0.566167},

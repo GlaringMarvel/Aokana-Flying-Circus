@@ -333,6 +333,7 @@ while True:
             print("加入战斗（重生次数1）")
             # 我至今找不到扔炸弹的原因
             keyboard.release('u')
+            break
         elif battle_state == 2:  # 寻找死亡后返回基地按钮
             back(x, y)
             flag = 0  # 10 已点击返回基地
@@ -355,6 +356,11 @@ while True:
                 break
             else:
                 print("载具未出生")
+        # 判断当前游戏状态，战局or机库
+        game_end = StateMachine.declaration_death()
+        if game_end < 2:
+            flag = 0
+            break
         # 记录循环结尾事件的日志
         # log_event(logger, '非正常战斗状态判断循环', '第二段循环')
 
@@ -438,7 +444,7 @@ while True:
                 # 未开启ccrp之前经过的时间
                 ccrp_ready_time = get_current_time()
                 time_unlike = ccrp_ready_time - delay_start_time
-                seconds_different = time_difference.total_seconds()
+                seconds_different = time_unlike.total_seconds()
 
             # 开启CCRP
             if IAS > 500 and ccrp_flag == 0 and seconds_different > ccrp_time:
