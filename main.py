@@ -437,11 +437,11 @@ while True:
             if ccrp_flag == 0:
                 # 未开启ccrp之前经过的时间
                 ccrp_ready_time = get_current_time()
-                time_difference = ccrp_ready_time - delay_start_time
-                seconds_passed = time_difference.total_seconds()
+                time_unlike = ccrp_ready_time - delay_start_time
+                seconds_different = time_difference.total_seconds()
 
             # 开启CCRP
-            if IAS > 500 and ccrp_flag == 0 and seconds_passed > ccrp_time:
+            if IAS > 500 and ccrp_flag == 0 and seconds_different > ccrp_time:
                 # 激活CCRP
                 # ccrp_start()
                 ccrp_flag = 1  # ccrp已激活
