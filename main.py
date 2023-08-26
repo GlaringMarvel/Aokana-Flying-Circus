@@ -208,14 +208,15 @@ sys.excepthook = custom_excepthook
 logging.basicConfig(filename='log.txt', level=logging.ERROR)
 
 # 获取data.txt中的设置
-(get_delay, _,
+(get_delay,
  direction_delay, _, _,
  press_time,
  harrier,
  mode,
  delay_takeoff,
  speed_limit,
- max_speed) = OpenFile.read_values()
+ max_speed,
+ ccrp_time) = OpenFile.read_values()
 print(f"数据请求延时设置为： {get_delay} s")
 print(f"方向调整延时设置为： {direction_delay} s")
 print(f"投弹键剩余按压时间： {press_time} s")
@@ -224,6 +225,7 @@ print(f"飞行模式： {mode}")
 print(f"延迟入场： {delay_takeoff}")
 print(f"限速开关： {speed_limit}")
 print(f"最大速度： {max_speed}")
+print(f"CCRP启动延时： {ccrp_time}")
 time.sleep(3)
 
 # 读取自动降落数据
@@ -370,9 +372,10 @@ while True:
         if throttle < 110 and 11 > flag > 8:
             print(f"节流阀：{throttle} 正在加力;")
             pushW()
-            (h1, h2, v1, v2, v3, number, map_found,
+            (h1, h2, v1, v2, v3, number, map_found, decelerate,
              wait_time, north_direction, south_direction) = Map.foundMap()  # 地图识别
-            print(f"飞行高度区间: {h1}m - {h2}m, 最小爬升率: {v1}, 正常爬升率: {v2}, 最大爬升率: {v3}, 战区选择：{num}")
+            print(f"飞行高度区间: {h1}m - {h2}m, 最小爬升率: {v1}, 正常爬升率: {v2}, 最大爬升率: {v3},"
+                  f" 战区选择：{num} ,减速距离 {decelerate} km")
             flag = 12
 
         # 获取地图大小
@@ -400,11 +403,10 @@ while True:
                         print(f"节流阀：{throttle} 正在加力;")
                         pushW()
                         # 地图识别
-                        (h1, h2, v1, v2, v3, number, map_found, wait_time,
-                         north_direction, south_direction) = Map.foundMap()
-                        print(
-                            f"飞行高度区间: {h1}m - {h2}m, 最小爬升率: {v1}, 正常爬升率: {v2}, 最大爬升率: {v3}, 战区选择：{num}"
-                        )
+                        (h1, h2, v1, v2, v3, number, map_found, decelerate,
+                         wait_time, north_direction, south_direction) = Map.foundMap()  # 地图识别
+                        print(f"飞行高度区间: {h1}m - {h2}m, 最小爬升率: {v1}, 正常爬升率: {v2}, 最大爬升率: {v3},"
+                              f" 战区选择：{num} ,减速距离 {decelerate} km")
                         flag = 12
                 elif bollen == -1 and flag == 9:
                     print("载具未出生")
@@ -431,8 +433,15 @@ while True:
             # 记录关于y轴控制的判断事件的日志
             # log_event(logger, 'y轴控制', '飞行状态控制')
 
+            # 空出图补救
+            if ccrp_flag == 0:
+                # 未开启ccrp之前经过的时间
+                ccrp_ready_time = get_current_time()
+                time_difference = ccrp_ready_time - delay_start_time
+                seconds_passed = time_difference.total_seconds()
+
             # 开启CCRP
-            if IAS > 500 and ccrp_flag == 0:
+            if IAS > 500 and ccrp_flag == 0 and seconds_passed > ccrp_time:
                 # 激活CCRP
                 # ccrp_start()
                 ccrp_flag = 1  # ccrp已激活
@@ -458,7 +467,7 @@ while True:
 
             # 关于航向的控制（x轴）
             if time_flag < 2 and ccrp_flag > -1:  # 如果玩家未完成投弹,并且非延迟入场
-                keyboard_event = Fighting.heading_control(IAS, map_size, time_flag, num, fox_2)
+                keyboard_event = Fighting.heading_control(IAS, map_size, time_flag, num, fox_2, decelerate)
             elif time_flag < 2 and ccrp_flag == -1:  # 如果玩家未完成投弹，并且开启延迟入场
                 ccrp_flag, keyboard_event = Fighting.delay_control(IAS, delay_start_time,
                                                                    wait_time, north_direction, south_direction)

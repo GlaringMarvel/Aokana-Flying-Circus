@@ -12,8 +12,8 @@ import datetime
 # from simple_pid import PID
 
 # 读取文件设置
-_, decelerate_distance, _, fox_two_distance, bombing_distance, _, _, _, _, _, _ = OpenFile.read_values()
-print(f"减速距离设置为： {decelerate_distance} Km")
+_, _, fox_two_distance, bombing_distance, _, _, _, _, _, _, _ = OpenFile.read_values()
+# print(f"减速距离设置为： {decelerate_distance} Km")
 print(f"热诱抛洒距离设置为： {fox_two_distance} Km")
 print(f"战区剩余距离判断设置为： {bombing_distance} Km")
 
@@ -223,7 +223,7 @@ def delta_control(delta):
 
 
 # 航向控制
-def heading_control(IAS, map_size, time_flag, num, fox_flag):
+def heading_control(IAS, map_size, time_flag, num, fox_flag, decelerate):
     if IAS < 500:
         flag = 0  # 不适合调整航向
         return flag
@@ -252,7 +252,7 @@ def heading_control(IAS, map_size, time_flag, num, fox_flag):
     if distance < fox_two_distance and fox_flag == 0:
         flag = 7  # 准备抛洒热诱
         return flag
-    if decelerate_distance > 0 and distance < decelerate_distance:
+    if decelerate > 0 and distance < decelerate:
         flag = 1  # 减速板打开
         return flag
     else:
@@ -437,7 +437,7 @@ def declaration_death(IAS, x, y, start_compass):
     if IAS > 1:
         flag = 0
         return flag
-    h1, h2, v1, v2, v3, _, map_found, _, _, _ = Map.foundMap()
+    h1, h2, v1, v2, v3, _, map_found, _, _, _, _ = Map.foundMap()
     if map_found == 0:  # 判断地图，是否在战局内
         flag = -1  # 第一种情况，非战斗中
         return flag

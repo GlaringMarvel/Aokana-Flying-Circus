@@ -32,7 +32,6 @@ def read_file_and_extract_values(filename, patterns, default_values, value_descr
 def read_values():
     # 如果想要增加参数，那么这里需要增加字段
     patterns = [r'flight_mode=(\d+(\.\d+)?)',  # 修改：匹配整数或小数
-                r'decelerate=(\d+(\.\d+)?)',
                 r'reorienting_direction=(\d+(\.\d+)?)',
                 r'infrared_decoy=(\d+(\.\d+)?)',
                 r'bombing_distance=(\d+(\.\d+)?)',
@@ -41,12 +40,12 @@ def read_values():
                 r'Mode=(\d+)',
                 r'delay_takeoff=(\d+)',
                 r'speed_limit=(\d+)',
-                r'max_speed=(\d+)']
+                r'max_speed=(\d+)',
+                r'ccrp_time=(\d+)']
     # 如果想要增加参数，那么这里需要增加默认值
-    default_values = [0.5, -1, 0.5, 10, 3, 5, 0, 2, 0, 0, 950]
+    default_values = [0.5, -1, 0.5, 10, 3, 5, 0, 2, 0, 0, 950, 30]
     # 如果想要增加参数，那么这里需要增加字段
     value_descriptions = ["数据请求延时",
-                          "减速距离",
                           "方位调整延时",
                           "热诱抛洒距离",
                           "战区剩余距离判断",
@@ -55,12 +54,13 @@ def read_values():
                           "飞行模式",
                           "延迟入场",
                           "限速开关",
-                          "最大速度"]
+                          "最大速度",
+                          "端口请求模式",
+                          "CCRP启动延时"]
 
     extracted_values = read_file_and_extract_values('Map.txt', patterns, default_values, value_descriptions)
     # 如果想要增加参数，那么下面需要增加变量
     (delay_time,
-     decelerate,
      direction,
      fox_2,
      bombing_distance,
@@ -69,11 +69,11 @@ def read_values():
      mode,
      delay_takeoff,
      speed_limit,
-     max_speed) = extracted_values  # 解包操作
+     max_speed,
+     ccrp_time) = extracted_values  # 解包操作
 
     # 如果想要增加参数，那么这里需要返回值
     return (delay_time,
-            decelerate,
             direction,
             fox_2,
             bombing_distance,
@@ -82,7 +82,8 @@ def read_values():
             mode,
             delay_takeoff,
             speed_limit,
-            max_speed)
+            max_speed,
+            ccrp_time)
 
 
 # 自动降落数据读取

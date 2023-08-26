@@ -43,11 +43,12 @@ def mapData(map_name):
                 v1 = int(values[2].split('=')[1])
                 v2 = int(values[3].split('=')[1])
                 v3 = int(values[4].split('=')[1])
-                number = int(values[5].split('=')[1])
-                time = int(values[6].split('=')[1])
-                north_direction = int(values[7].split('=')[1])
-                south_direction = int(values[8].split('=')[1])
-                return h1, h2, v1, v2, v3, number, time, north_direction, south_direction
+                decelerate = int(values[5].split('=')[1])
+                number = int(values[6].split('=')[1])
+                time = int(values[7].split('=')[1])
+                north_direction = int(values[8].split('=')[1])
+                south_direction = int(values[9].split('=')[1])
+                return h1, h2, v1, v2, v3, number, decelerate, time, north_direction, south_direction
         return None
 
 
@@ -57,7 +58,7 @@ def foundMap():
     v1 = 5
     v2 = 15
     v3 = 20
-    number = map_found = time = north_direction = south_direction = 1
+    decelerate = number = map_found = time = north_direction = south_direction = 1
     NoMap = 'e4e7e3c8f378aa215cdd19a1f4c3a1b3'
     Vietnam = 'a546079510cd41d19f5a26bbbc4e738d'
     SinaiPeninsula = '24a39808b80abe5359d23ec454ffb536'
@@ -71,44 +72,44 @@ def foundMap():
     if md5 == NoMap:
         print("非战斗中")
         map_found = 0
-        return h1, h2, v1, v2, v3, number, map_found, time, north_direction, south_direction
+        return h1, h2, v1, v2, v3, number, map_found, decelerate, time, north_direction, south_direction
     elif md5 is None:
         print("正在加载")
         map_found = 2
-        return h1, h2, v1, v2, v3, number, map_found, time, north_direction, south_direction
+        return h1, h2, v1, v2, v3, number, map_found, decelerate, time, north_direction, south_direction
     elif md5 == Vietnam:
         print("地图 越南")
-        h1, h2, v1, v2, v3, number, time, north_direction, south_direction = mapData('Vietnam')
-        return h1, h2, v1, v2, v3, number, map_found, time, north_direction, south_direction
+        h1, h2, v1, v2, v3, number, decelerate, time, north_direction, south_direction = mapData('Vietnam')
+        return h1, h2, v1, v2, v3, number, map_found, decelerate, time, north_direction, south_direction
     elif md5 == SinaiPeninsula:
         print("地图 西奈半岛")
-        h1, h2, v1, v2, v3, number, time, north_direction, south_direction = mapData('SinaiPeninsula')
-        return h1, h2, v1, v2, v3, number, map_found, time, north_direction, south_direction
+        h1, h2, v1, v2, v3, number, decelerate, time,  north_direction, south_direction = mapData('SinaiPeninsula')
+        return h1, h2, v1, v2, v3, number, map_found, decelerate, time, north_direction, south_direction
     elif md5 == GolanHeights:
         print("地图 戈兰高地")
-        h1, h2, v1, v2, v3, number, time, north_direction, south_direction = mapData('GolanHeights')
-        return h1, h2, v1, v2, v3, number, map_found, time, north_direction, south_direction
+        h1, h2, v1, v2, v3, number, decelerate, time, north_direction, south_direction = mapData('GolanHeights')
+        return h1, h2, v1, v2, v3, number, map_found, decelerate, time, north_direction, south_direction
     elif md5 == Spain:
         print("地图 西班牙")
-        h1, h2, v1, v2, v3, number, time, north_direction, south_direction = mapData('Spain')
-        return h1, h2, v1, v2, v3, number, map_found, time, north_direction, south_direction
+        h1, h2, v1, v2, v3, number, decelerate, time, north_direction, south_direction = mapData('Spain')
+        return h1, h2, v1, v2, v3, number, map_found, decelerate, time, north_direction, south_direction
     elif md5 == PyreneesMountains:
         print("地图 比利牛斯山脉")
-        h1, h2, v1, v2, v3, number, time, north_direction, south_direction = mapData('PyreneesMountains')
-        return h1, h2, v1, v2, v3, number, map_found, time, north_direction, south_direction
+        h1, h2, v1, v2, v3, number, decelerate, time, north_direction, south_direction = mapData('PyreneesMountains')
+        return h1, h2, v1, v2, v3, number, map_found, decelerate, time, north_direction, south_direction
     elif md5 == BigCity:
         print("地图 大都会")
-        h1, h2, v1, v2, v3, number, time, north_direction, south_direction = mapData('BigCity')
-        return h1, h2, v1, v2, v3, number, map_found, time, north_direction, south_direction
+        h1, h2, v1, v2, v3, number, decelerate, time, north_direction, south_direction = mapData('BigCity')
+        return h1, h2, v1, v2, v3, number, map_found, decelerate, time, north_direction, south_direction
     elif md5 == Afghanistan:
         print("地图 阿富汗")
-        h1, h2, v1, v2, v3, number, time, north_direction, south_direction = mapData('Afghanistan')
-        return h1, h2, v1, v2, v3, number, map_found, time, north_direction, south_direction
+        h1, h2, v1, v2, v3, number, decelerate, time, north_direction, south_direction = mapData('Afghanistan')
+        return h1, h2, v1, v2, v3, number, map_found, decelerate, time, north_direction, south_direction
     elif md5 == RockiesCanyon:
         print("地图 洛基峡谷")
-        h1, h2, v1, v2, v3, number, time, north_direction, south_direction = mapData('RockiesCanyon')
-        return h1, h2, v1, v2, v3, number, map_found, time, north_direction, south_direction
+        h1, h2, v1, v2, v3, number, decelerate, time, north_direction, south_direction = mapData('RockiesCanyon')
+        return h1, h2, v1, v2, v3, number, map_found, decelerate, time, north_direction, south_direction
     else:
         print("不在地图库中")
-        h1, h2, v1, v2, v3, number, time, north_direction, south_direction = mapData('Others')
-        return h1, h2, v1, v2, v3, number, map_found, time, north_direction, south_direction
+        h1, h2, v1, v2, v3, number, decelerate, time, north_direction, south_direction = mapData('Others')
+        return h1, h2, v1, v2, v3, number, map_found, decelerate, time, north_direction, south_direction
