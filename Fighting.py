@@ -12,7 +12,7 @@ import datetime
 # from simple_pid import PID
 
 # 读取文件设置
-_, _, fox_two_distance, bombing_distance, _, _, _, _, _, _, _ = OpenFile.read_values()
+_, _, fox_two_distance, bombing_distance, _, _, _, _, _, _, _, _, _, _, _ = OpenFile.read_values()
 # print(f"减速距离设置为： {decelerate_distance} Km")
 print(f"热诱抛洒距离设置为： {fox_two_distance} Km")
 print(f"战区剩余距离判断设置为： {bombing_distance} Km")

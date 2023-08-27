@@ -12,6 +12,7 @@ def battle_found(x, y):
     else:
         return 0  # 返回值0，识别失败
 
+
 # 判断接下来机库内鼠标行动的依据
 def mouse_event():
     button_found = StateMachine.hangar_identify()
@@ -30,7 +31,7 @@ def mouse_event():
     elif button_found == 5:  # 成员组锁定
         event = 3
         return event
-    elif button_found == 7:     # 研发按钮
+    elif button_found == 7:  # 研发按钮
         event = 5
         return event
     else:  # 无法识别,Esc事件

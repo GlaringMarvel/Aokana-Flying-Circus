@@ -190,12 +190,6 @@ def research_click(x, y):
     click()
 
 
-# # 设置日志文件路径
-# log_file = 'log.txt'
-# # 设置日志记录器
-# logger = setup_logger(log_file)
-
-
 # 报错记录
 def custom_excepthook(exctype, value, tb):
     # 获取当前时间
@@ -223,7 +217,11 @@ logging.basicConfig(filename='log.txt', level=logging.ERROR)
  delay_takeoff,
  speed_limit,
  max_speed,
- ccrp_time) = OpenFile.read_values()
+ ccrp_time,
+ thr_control,
+ thr_min,
+ thr_max,
+ afterburner) = OpenFile.read_values()
 print(f"数据请求延时设置为： {get_delay} s")
 print(f"方向调整延时设置为： {direction_delay} s")
 print(f"投弹键剩余按压时间： {press_time} s")
@@ -233,6 +231,10 @@ print(f"延迟入场： {delay_takeoff}")
 print(f"限速开关： {speed_limit}")
 print(f"最大速度： {max_speed}")
 print(f"CCRP启动延时： {ccrp_time}")
+print(f"节流阀控制： {thr_control}")
+print(f"最小节流阀： {thr_min}")
+print(f"最大节流阀： {thr_max}")
+print(f"加力模式： {afterburner}")
 time.sleep(3)
 
 # 读取自动降落数据
@@ -267,8 +269,6 @@ map_size = 65535
 # 设立判断标志
 flag = 0
 start_time = get_current_time()
-
-# if __name__ == "__main__":
 
 # 主程序开始
 while True:
@@ -338,8 +338,8 @@ while True:
     # 非正常战斗状态判断循环
     while 9 > flag > 5:
         # 判断当前游戏状态，战局or机库
-        game_end = StateMachine.declaration_death()
-        if game_end < 2:
+        mouse_event = HangarMenu.mouse_event()
+        if mouse_event == 2:
             flag = 0
             break
         
@@ -375,8 +375,6 @@ while True:
                 break
             else:
                 print("载具未出生")
-        # 记录循环结尾事件的日志
-        # log_event(logger, '非正常战斗状态判断循环', '第二段循环')
 
     # 事件标志与热诱标志
     airfield_height = start_compass = airfield_compass = time_flag = fox_2 = 0
@@ -450,13 +448,18 @@ while True:
                 moveUp(y_correct_1)
                 print("爬升：大幅")
             time.sleep(get_delay)
-            # 记录关于y轴控制的判断事件的日志
-            # log_event(logger, 'y轴控制', '飞行状态控制')
+
+            # 节流阀控制
+            if throttle < thr_min and thr_control == 1:
+                throttle_push(thr_min-throttle)
+            elif throttle > thr_max and thr_control == 1:
+                throttle_pull(throttle-thr_max)
 
             # 空出图补救
-            if 99 < throttle < 110:
+            if 99 < throttle < 110 and afterburner == 1:
                 print(f"节流阀：{throttle} 正在加力;")
                 pushW()
+            # CCRP延时
             if ccrp_flag == 0:
                 # 未开启ccrp之前经过的时间
                 ccrp_ready_time = get_current_time()
@@ -466,7 +469,6 @@ while True:
             # 开启CCRP
             if IAS > 500 and ccrp_flag == 0 and seconds_different > ccrp_time:
                 # 激活CCRP
-                # ccrp_start()
                 ccrp_flag = 1  # ccrp已激活
                 frequency = 0
                 while frequency < num:  # 实现选择第几个战区
@@ -546,8 +548,6 @@ while True:
                 fox_two()
                 fox_2 = 1
                 print("开启热诱循环")
-            # 记录关于X轴控制的判断事件的日志.
-            # log_event(logger, 'X轴控制', '飞行状态控制')
 
             # 计算出3个返航检查点
             if IAS < 200 and mode == 3:
@@ -580,14 +580,10 @@ while True:
                             time.sleep(0.5)
                             harrier_engineer()
             time.sleep(direction_delay)
-            # 记录关于投弹结束的判断事件的日志
-            # log_event(logger, '投弹结束', '进入第二个阶段')
 
     # 自动降落
     airport_distance = 25
     end_land = death_flag = 0
-    # check_num = 3
-    # checkpoint_data[0] = (0, checkpoint_0_v)
     # 返回机场
     while flag > 20:
         Vy, Hm, throttle, IAS, airbrake = port8111.getState()
@@ -614,20 +610,13 @@ while True:
             time.sleep(3)
             print("重生完毕")
             break
-        # elif death_flag == -2:
-        #     flag = 21
-        #     throttle_pull(3)
-        #     break
 
         # 节流阀，减速板，y轴控制
         if 5 < airport_distance:
             end_land = 5
         elif airport_distance <= 5:
             end_land = 3
-        # elif check_num < 0:
-        #     throttle_control = airbrake_control = keyboard_event = 0
-        #     flag = 21
-        #     break
+
         (throttle_control, airbrake_control,
          keyboard_event) = Fighting.land_controller(airport_distance, checkpoint_data, Vy,
                                                     Hm, throttle, IAS, airbrake, airfield_height, end_land)
@@ -663,4 +652,3 @@ while True:
             moveL(-keyboard_event)
         time.sleep(0.1)
 
-    # input("按任意键继续...")

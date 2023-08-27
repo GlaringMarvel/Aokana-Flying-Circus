@@ -4,12 +4,15 @@
 [战区剩余距离判断]bombing_distance=3
 [投弹键剩余按压时间]press_time=5
 [鹞式战机]Harrier=0
-[飞行模式]Mode=3
+[飞行模式]Mode=2
 [延迟入场]delay_takeoff=0
 [限速]speed_limit=0
 [最大速度]max_speed=1200
 [端口请求模式]port8111=2
-[CCRP启动延时]ccrp_time=4500
+[CCRP启动延时]ccrp_time=45
+[节流阀控制]throttle_control=0
+[节流阀范围]thr_min=90,thr_max=95
+[加力模式]afterburner=1
 ###########################################################################################################################
 越南
 Vietnam:h1=900,h2=1200,v1=3,v2=5,v3=10,number=3,decelerate=-1,time=300,north_direction=150,south_direction=300
