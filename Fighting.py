@@ -223,7 +223,7 @@ def delta_control(delta):
 
 
 # 航向控制
-def heading_control(IAS, map_size, time_flag, num, fox_flag, decelerate):
+def heading_control(IAS, map_size, time_flag, num, fox_flag, decelerate, airbrake):
     if IAS < 500:
         flag = 0  # 不适合调整航向
         return flag
@@ -252,7 +252,7 @@ def heading_control(IAS, map_size, time_flag, num, fox_flag, decelerate):
     if distance < fox_two_distance and fox_flag == 0:
         flag = 7  # 准备抛洒热诱
         return flag
-    if decelerate > 0 and distance < decelerate:
+    if decelerate > 0 and distance < decelerate and airbrake < 1:
         flag = 1  # 减速板打开
         return flag
     else:

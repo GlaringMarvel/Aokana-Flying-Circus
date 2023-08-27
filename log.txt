@@ -1,47 +1,25 @@
-ERROR:root:An exception occurred
-NoneType: None
-ERROR:root:Error[Time:2023-08-26 10:41:56]:
-NoneType: None
-ERROR:root:Error[Time:2023-08-26 10:44:16]:
-NoneType: None
-ERROR:root:Error[Time:2023-08-26 10:44:37]:
-NoneType: None
-ERROR:root:Error[Time:2023-08-26 10:52:56]:
+ERROR:root:Error[Time:2023-08-27 16:53:11]:
 NoneType: None
 ERROR:root:Traceback (most recent call last):
-  File "C:\Users\Dell\Desktop\Bot\Aokana Flying Circus\main.py", line 265, in <module>
+  File "C:\Users\Dell\Desktop\Bot\Aokana Flying Circus\main.py", line 276, in <module>
     x, y, center_x = GetWindow.window_found()
                      ^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\Dell\Desktop\Bot\Aokana Flying Circus\GetWindow.py", line 29, in window_found
-    window.activate()
-  File "C:\Users\Dell\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\pygetwindow\_pygetwindow_win.py", line 246, in activate
-    _raiseWithLastError()
-  File "C:\Users\Dell\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\pygetwindow\_pygetwindow_win.py", line 99, in _raiseWithLastError
-    raise PyGetWindowException('Error code from Windows: %s - %s' % (errorCode, _formatMessage(errorCode)))
-pygetwindow.PyGetWindowException: Error code from Windows: 0 - 操作成功完成。
+  File "C:\Users\Dell\Desktop\Bot\Aokana Flying Circus\GetWindow.py", line 30, in window_found
+    time.sleep(3)
+KeyboardInterrupt
 NoneType: None
-ERROR:root:Error[Time:2023-08-27 08:23:16]:
+ERROR:root:Error[Time:2023-08-27 16:58:09]:
 NoneType: None
 ERROR:root:Traceback (most recent call last):
-  File "C:\Users\Dell\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\urllib3\util\connection.py", line 73, in create_connection
-    sock.connect(sa)
-ConnectionRefusedError: [WinError 10061] 由于目标计算机积极拒绝，无法连接。
-
-During handling of the above exception, another exception occurred:
-
-Traceback (most recent call last):
-  File "C:\Users\Dell\Desktop\Bot\Aokana Flying Circus\main.py", line 279, in <module>
-    hangar = StateMachine.declaration_death()
-             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\Dell\Desktop\Bot\Aokana Flying Circus\StateMachine.py", line 13, in declaration_death
-    h1, h2, v1, v2, v3, _, map_found, _, _, _, _ = Map.foundMap()
-                                                   ^^^^^^^^^^^^^^
-  File "C:\Users\Dell\Desktop\Bot\Aokana Flying Circus\Map.py", line 71, in foundMap
-    md5 = MD5()
-          ^^^^^
-  File "C:\Users\Dell\Desktop\Bot\Aokana Flying Circus\Map.py", line 20, in MD5
-    response = requests.get(url, timeout=5)  # 设置超时时间为5秒
-               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Dell\Desktop\Bot\Aokana Flying Circus\main.py", line 493, in <module>
+    keyboard_event = Fighting.heading_control(IAS, map_size, time_flag, num, fox_2, decelerate, airbrake)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Dell\Desktop\Bot\Aokana Flying Circus\Fighting.py", line 236, in heading_control
+    player_coordinates, bombing_coordinates, amount = port8111.get_bombing_point_select(num - 1)
+                                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Dell\Desktop\Bot\Aokana Flying Circus\port8111.py", line 171, in get_bombing_point_select
+    response = requests.get(url)  # 发送请求获取数据
+               ^^^^^^^^^^^^^^^^^
   File "C:\Users\Dell\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\requests\api.py", line 73, in get
     return request("get", url, params=params, **kwargs)
            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -60,159 +38,111 @@ Traceback (most recent call last):
   File "C:\Users\Dell\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\urllib3\connectionpool.py", line 790, in urlopen
     response = self._make_request(
                ^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\Dell\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\urllib3\connectionpool.py", line 496, in _make_request
-    conn.request(
-  File "C:\Users\Dell\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\urllib3\connection.py", line 395, in request
-    self.endheaders()
-  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.1264.0_x64__qbz5n2kfra8p0\Lib\http\client.py", line 1281, in endheaders
-    self._send_output(message_body, encode_chunked=encode_chunked)
-  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.1264.0_x64__qbz5n2kfra8p0\Lib\http\client.py", line 1041, in _send_output
-    self.send(msg)
-  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.1264.0_x64__qbz5n2kfra8p0\Lib\http\client.py", line 979, in send
-    self.connect()
-  File "C:\Users\Dell\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\urllib3\connection.py", line 243, in connect
-    self.sock = self._new_conn()
-                ^^^^^^^^^^^^^^^^
-  File "C:\Users\Dell\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\urllib3\connection.py", line 203, in _new_conn
-    sock = connection.create_connection(
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\Dell\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\urllib3\util\connection.py", line 81, in create_connection
-    sock.close()
-  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.1264.0_x64__qbz5n2kfra8p0\Lib\socket.py", line 499, in close
-    def close(self):
-    
+  File "C:\Users\Dell\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\urllib3\connectionpool.py", line 536, in _make_request
+    response = conn.getresponse()
+               ^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Dell\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\urllib3\connection.py", line 461, in getresponse
+    httplib_response = super().getresponse()
+                       ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.1520.0_x64__qbz5n2kfra8p0\Lib\http\client.py", line 1378, in getresponse
+    response.begin()
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.1520.0_x64__qbz5n2kfra8p0\Lib\http\client.py", line 318, in begin
+    version, status, reason = self._read_status()
+                              ^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.1520.0_x64__qbz5n2kfra8p0\Lib\http\client.py", line 279, in _read_status
+    line = str(self.fp.readline(_MAXLINE + 1), "iso-8859-1")
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.1520.0_x64__qbz5n2kfra8p0\Lib\socket.py", line 706, in readinto
+    return self._sock.recv_into(b)
+           ^^^^^^^^^^^^^^^^^^^^^^^
 KeyboardInterrupt
 NoneType: None
-ERROR:root:Error[Time:2023-08-27 08:23:58]:
+ERROR:root:Error[Time:2023-08-27 17:11:58]:
 NoneType: None
 ERROR:root:Traceback (most recent call last):
-  File "C:\Users\Dell\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\urllib3\util\connection.py", line 73, in create_connection
-    sock.connect(sa)
-ConnectionRefusedError: [WinError 10061] 由于目标计算机积极拒绝，无法连接。
-
-During handling of the above exception, another exception occurred:
-
-Traceback (most recent call last):
-  File "C:\Users\Dell\Desktop\Bot\Aokana Flying Circus\main.py", line 279, in <module>
-    hangar = StateMachine.declaration_death()
-             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\Dell\Desktop\Bot\Aokana Flying Circus\StateMachine.py", line 13, in declaration_death
-    h1, h2, v1, v2, v3, _, map_found, _, _, _, _ = Map.foundMap()
-                                                   ^^^^^^^^^^^^^^
-  File "C:\Users\Dell\Desktop\Bot\Aokana Flying Circus\Map.py", line 71, in foundMap
-    md5 = MD5()
-          ^^^^^
-  File "C:\Users\Dell\Desktop\Bot\Aokana Flying Circus\Map.py", line 20, in MD5
-    response = requests.get(url, timeout=5)  # 设置超时时间为5秒
-               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\Dell\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\requests\api.py", line 73, in get
-    return request("get", url, params=params, **kwargs)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\Dell\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\requests\api.py", line 59, in request
-    return session.request(method=method, url=url, **kwargs)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\Dell\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\requests\sessions.py", line 589, in request
-    resp = self.send(prep, **send_kwargs)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\Dell\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\requests\sessions.py", line 703, in send
-    r = adapter.send(request, **kwargs)
-        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\Dell\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\requests\adapters.py", line 486, in send
-    resp = conn.urlopen(
-           ^^^^^^^^^^^^^
-  File "C:\Users\Dell\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\urllib3\connectionpool.py", line 790, in urlopen
-    response = self._make_request(
-               ^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\Dell\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\urllib3\connectionpool.py", line 496, in _make_request
-    conn.request(
-  File "C:\Users\Dell\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\urllib3\connection.py", line 395, in request
-    self.endheaders()
-  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.1264.0_x64__qbz5n2kfra8p0\Lib\http\client.py", line 1281, in endheaders
-    self._send_output(message_body, encode_chunked=encode_chunked)
-  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.1264.0_x64__qbz5n2kfra8p0\Lib\http\client.py", line 1041, in _send_output
-    self.send(msg)
-  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.1264.0_x64__qbz5n2kfra8p0\Lib\http\client.py", line 979, in send
-    self.connect()
-  File "C:\Users\Dell\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\urllib3\connection.py", line 243, in connect
-    self.sock = self._new_conn()
-                ^^^^^^^^^^^^^^^^
-  File "C:\Users\Dell\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\urllib3\connection.py", line 203, in _new_conn
-    sock = connection.create_connection(
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\Dell\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\urllib3\util\connection.py", line 81, in create_connection
-    sock.close()
-  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.1264.0_x64__qbz5n2kfra8p0\Lib\socket.py", line 499, in close
-    def close(self):
-    
-KeyboardInterrupt
-NoneType: None
-ERROR:root:Error[Time:2023-08-27 08:24:31]:
-NoneType: None
-ERROR:root:Traceback (most recent call last):
-  File "C:\Users\Dell\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\urllib3\util\connection.py", line 73, in create_connection
-    sock.connect(sa)
-ConnectionRefusedError: [WinError 10061] 由于目标计算机积极拒绝，无法连接。
-
-During handling of the above exception, another exception occurred:
-
-Traceback (most recent call last):
-  File "C:\Users\Dell\Desktop\Bot\Aokana Flying Circus\main.py", line 279, in <module>
-    hangar = StateMachine.declaration_death()
-             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\Dell\Desktop\Bot\Aokana Flying Circus\StateMachine.py", line 13, in declaration_death
-    h1, h2, v1, v2, v3, _, map_found, _, _, _, _ = Map.foundMap()
-                                                   ^^^^^^^^^^^^^^
-  File "C:\Users\Dell\Desktop\Bot\Aokana Flying Circus\Map.py", line 71, in foundMap
-    md5 = MD5()
-          ^^^^^
-  File "C:\Users\Dell\Desktop\Bot\Aokana Flying Circus\Map.py", line 20, in MD5
-    response = requests.get(url, timeout=5)  # 设置超时时间为5秒
-               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\Dell\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\requests\api.py", line 73, in get
-    return request("get", url, params=params, **kwargs)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\Dell\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\requests\api.py", line 59, in request
-    return session.request(method=method, url=url, **kwargs)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\Dell\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\requests\sessions.py", line 589, in request
-    resp = self.send(prep, **send_kwargs)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\Dell\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\requests\sessions.py", line 703, in send
-    r = adapter.send(request, **kwargs)
-        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\Dell\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\requests\adapters.py", line 486, in send
-    resp = conn.urlopen(
-           ^^^^^^^^^^^^^
-  File "C:\Users\Dell\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\urllib3\connectionpool.py", line 790, in urlopen
-    response = self._make_request(
-               ^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\Dell\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\urllib3\connectionpool.py", line 496, in _make_request
-    conn.request(
-  File "C:\Users\Dell\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\urllib3\connection.py", line 395, in request
-    self.endheaders()
-  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.1264.0_x64__qbz5n2kfra8p0\Lib\http\client.py", line 1281, in endheaders
-    self._send_output(message_body, encode_chunked=encode_chunked)
-  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.1264.0_x64__qbz5n2kfra8p0\Lib\http\client.py", line 1041, in _send_output
-    self.send(msg)
-  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.1264.0_x64__qbz5n2kfra8p0\Lib\http\client.py", line 979, in send
-    self.connect()
-  File "C:\Users\Dell\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\urllib3\connection.py", line 243, in connect
-    self.sock = self._new_conn()
-                ^^^^^^^^^^^^^^^^
-  File "C:\Users\Dell\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\urllib3\connection.py", line 203, in _new_conn
-    sock = connection.create_connection(
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\Dell\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\urllib3\util\connection.py", line 81, in create_connection
-    sock.close()
-  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.1264.0_x64__qbz5n2kfra8p0\Lib\socket.py", line 499, in close
-    def close(self):
-    
-KeyboardInterrupt
-NoneType: None
-ERROR:root:Error[Time:2023-08-27 08:25:07]:
-NoneType: None
-ERROR:root:Traceback (most recent call last):
-  File "C:\Users\Dell\Desktop\Bot\Aokana Flying Circus\main.py", line 292, in <module>
+  File "C:\Users\Dell\Desktop\Bot\Aokana Flying Circus\main.py", line 643, in <module>
     time.sleep(1)
+KeyboardInterrupt
+NoneType: None
+ERROR:root:Error[Time:2023-08-27 17:17:24]:
+NoneType: None
+ERROR:root:Traceback (most recent call last):
+  File "C:\Users\Dell\Desktop\Bot\Aokana Flying Circus\main.py", line 281, in <module>
+    hangar = StateMachine.declaration_death()
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Dell\Desktop\Bot\Aokana Flying Circus\StateMachine.py", line 13, in declaration_death
+    h1, h2, v1, v2, v3, _, map_found, _, _, _, _ = Map.foundMap()
+                                                   ^^^^^^^^^^^^^^
+  File "C:\Users\Dell\Desktop\Bot\Aokana Flying Circus\Map.py", line 71, in foundMap
+    md5 = MD5()
+          ^^^^^
+  File "C:\Users\Dell\Desktop\Bot\Aokana Flying Circus\Map.py", line 20, in MD5
+    response = requests.get(url, timeout=5)  # 设置超时时间为5秒
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Dell\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\requests\api.py", line 73, in get
+    return request("get", url, params=params, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Dell\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\requests\api.py", line 59, in request
+    return session.request(method=method, url=url, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Dell\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\requests\sessions.py", line 589, in request
+    resp = self.send(prep, **send_kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Dell\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\requests\sessions.py", line 703, in send
+    r = adapter.send(request, **kwargs)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Dell\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\requests\adapters.py", line 486, in send
+    resp = conn.urlopen(
+           ^^^^^^^^^^^^^
+  File "C:\Users\Dell\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\urllib3\connectionpool.py", line 790, in urlopen
+    response = self._make_request(
+               ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Dell\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\urllib3\connectionpool.py", line 496, in _make_request
+    conn.request(
+  File "C:\Users\Dell\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\urllib3\connection.py", line 395, in request
+    self.endheaders()
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.1520.0_x64__qbz5n2kfra8p0\Lib\http\client.py", line 1281, in endheaders
+    self._send_output(message_body, encode_chunked=encode_chunked)
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.1520.0_x64__qbz5n2kfra8p0\Lib\http\client.py", line 1041, in _send_output
+    self.send(msg)
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.1520.0_x64__qbz5n2kfra8p0\Lib\http\client.py", line 979, in send
+    self.connect()
+  File "C:\Users\Dell\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\urllib3\connection.py", line 243, in connect
+    self.sock = self._new_conn()
+                ^^^^^^^^^^^^^^^^
+  File "C:\Users\Dell\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\urllib3\connection.py", line 203, in _new_conn
+    sock = connection.create_connection(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Dell\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\urllib3\util\connection.py", line 64, in create_connection
+    sock = socket.socket(af, socktype, proto)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.1520.0_x64__qbz5n2kfra8p0\Lib\socket.py", line 232, in __init__
+    _socket.socket.__init__(self, family, type, proto, fileno)
+KeyboardInterrupt
+NoneType: None
+ERROR:root:Error[Time:2023-08-27 17:18:32]:
+NoneType: None
+ERROR:root:Traceback (most recent call last):
+  File "C:\Users\Dell\Desktop\Bot\Aokana Flying Circus\main.py", line 304, in <module>
+    time.sleep(60)
+KeyboardInterrupt
+NoneType: None
+ERROR:root:Error[Time:2023-08-27 17:25:31]:
+NoneType: None
+ERROR:root:Traceback (most recent call last):
+  File "C:\Users\Dell\Desktop\Bot\Aokana Flying Circus\main.py", line 596, in <module>
+    throttle_pull(3)
+  File "C:\Users\Dell\Desktop\Bot\Aokana Flying Circus\main.py", line 166, in throttle_pull
+    time.sleep(t)
+KeyboardInterrupt
+NoneType: None
+ERROR:root:Error[Time:2023-08-27 17:38:35]:
+NoneType: None
+ERROR:root:Traceback (most recent call last):
+  File "C:\Users\Dell\Desktop\Bot\Aokana Flying Circus\main.py", line 346, in <module>
+    x, y, center_x = GetWindow.window_found()
+                     ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Dell\Desktop\Bot\Aokana Flying Circus\GetWindow.py", line 30, in window_found
+    time.sleep(3)
 KeyboardInterrupt
 NoneType: None

@@ -185,7 +185,7 @@ def random_mode(mode):
 
 # 研发按钮点击
 def research_click(x, y):
-    pyautogui.moveTo(x + 370, y + 575)
+    pyautogui.moveTo(x + 400, y + 575)
     time.sleep(1)
     click()
 
@@ -238,6 +238,8 @@ time.sleep(3)
 # 读取自动降落数据
 checkpoint_four, checkpoint_three, checkpoint_two, checkpoint_one, checkpoint_zero = OpenFile.read_land()
 checkpoint_data = [checkpoint_zero, checkpoint_one, checkpoint_two, checkpoint_three, checkpoint_four]
+friendly_airport = checkpoint_2 = checkpoint_4 = (-1,-1)
+checkpoint_collection = [friendly_airport, checkpoint_2, checkpoint_4]
 if mode == 3:
     print(f"检查点4：{checkpoint_four}，"
           f"检查点3：{checkpoint_three}，"
@@ -335,6 +337,12 @@ while True:
 
     # 非正常战斗状态判断循环
     while 9 > flag > 5:
+        # 判断当前游戏状态，战局or机库
+        game_end = StateMachine.declaration_death()
+        if game_end < 2:
+            flag = 0
+            break
+        
         x, y, center_x = GetWindow.window_found()
         # 寻找加入战斗（重生次数1），寻找加入战斗后的取消按钮，寻找死亡后返回基地按钮
         battle_state = StateMachine.battle_state()
@@ -367,11 +375,6 @@ while True:
                 break
             else:
                 print("载具未出生")
-        # 判断当前游戏状态，战局or机库
-        game_end = StateMachine.declaration_death()
-        if game_end < 2:
-            flag = 0
-            break
         # 记录循环结尾事件的日志
         # log_event(logger, '非正常战斗状态判断循环', '第二段循环')
 
@@ -451,6 +454,9 @@ while True:
             # log_event(logger, 'y轴控制', '飞行状态控制')
 
             # 空出图补救
+            if 99 < throttle < 110:
+                print(f"节流阀：{throttle} 正在加力;")
+                pushW()
             if ccrp_flag == 0:
                 # 未开启ccrp之前经过的时间
                 ccrp_ready_time = get_current_time()
@@ -484,7 +490,7 @@ while True:
 
             # 关于航向的控制（x轴）
             if time_flag < 2 and ccrp_flag > -1:  # 如果玩家未完成投弹,并且非延迟入场
-                keyboard_event = Fighting.heading_control(IAS, map_size, time_flag, num, fox_2, decelerate)
+                keyboard_event = Fighting.heading_control(IAS, map_size, time_flag, num, fox_2, decelerate, airbrake)
             elif time_flag < 2 and ccrp_flag == -1:  # 如果玩家未完成投弹，并且开启延迟入场
                 ccrp_flag, keyboard_event = Fighting.delay_control(IAS, delay_start_time,
                                                                    wait_time, north_direction, south_direction)
@@ -528,7 +534,7 @@ while True:
             elif keyboard_event == 4:
                 moveL(x_correct_4)
                 print("航向修正：左")
-            elif keyboard_event == 1 and airbrake == 0:  # 开启减速板
+            elif keyboard_event == 1 and airbrake < 1:  # 开启减速板
                 keyboard_h()
                 print("开启减速板")
             elif keyboard_event == 5 and time_flag == 0:  # 即将到达战局，开始计时
