@@ -62,12 +62,13 @@ def foundMap():
     NoMap = 'e4e7e3c8f378aa215cdd19a1f4c3a1b3'
     Vietnam = 'a546079510cd41d19f5a26bbbc4e738d'
     SinaiPeninsula = '24a39808b80abe5359d23ec454ffb536'
-    GolanHeights = '166b151d03e6ecb507b0af3ba19583cf'
+    GolanHeights = 'a0dda26dc397d5833dbe495ef48bbf23'
     Spain = '4c088fd502175f94fe1cf82a58135d82'
     PyreneesMountains = 'd8997861e6b8bb555064bb554719a18b'
     BigCity = 'ed9014e03f959769e15f31bc263838a5'
     Afghanistan = 'eeadce7b9a2be282c84bb72e982d0302'
     RockiesCanyon = '924d7cadb5bf24f243474386195251b7'
+    RockyPillars = 'b27859ac2ae64088cc77665ccd9af959'
     md5 = MD5()
     if md5 == NoMap:
         print("非战斗中")
@@ -108,6 +109,10 @@ def foundMap():
     elif md5 == RockiesCanyon:
         print("地图 洛基峡谷")
         h1, h2, v1, v2, v3, number, decelerate, time, north_direction, south_direction = mapData('RockiesCanyon')
+        return h1, h2, v1, v2, v3, number, map_found, decelerate, time, north_direction, south_direction
+    elif md5 == RockyPillars:
+        print("地图 石柱")
+        h1, h2, v1, v2, v3, number, decelerate, time, north_direction, south_direction = mapData('RockyPillars')
         return h1, h2, v1, v2, v3, number, map_found, decelerate, time, north_direction, south_direction
     else:
         print("不在地图库中")

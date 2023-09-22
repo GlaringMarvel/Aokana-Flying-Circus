@@ -30,6 +30,8 @@ BigCity:h1=1000,h2=1200,v1=3,v2=5,v3=10,number=3,decelerate=-1,time=300,north_di
 Afghanistan:h1=7000,h2=8000,v1=5,v2=15,v3=20,number=3,decelerate=-1,time=300,north_direction=150,south_direction=300
 洛基峡谷
 RockiesCanyon:h1=3500,h2=4000,v1=5,v2=15,v3=20,number=3,decelerate=-1,time=300,north_direction=150,south_direction=300
+石柱
+RockyPillars:h1=3500,h2=4000,v1=5,v2=15,v3=20,number=3,decelerate=-1,time=300,north_direction=150,south_direction=300
 全局设置
 Others:h1=3500,h2=4000,v1=5,v2=15,v3=20,number=3,decelerate=-1,time=300,north_direction=150,south_direction=300
 ###########################################################################################################################
