@@ -1,5 +1,10 @@
 # Aokana Flying Circus
 
+
+# 这半年来关于脚本与外挂的查封非常严格，不建议使用脚本
+# 并且因为没有精力维护，该项目已经停更
+
+
 ### 基于War Thunder这款游戏的空战历史脚本
 
 ### Based on the aircraft script of the game War Thunder
