@@ -64,8 +64,6 @@ this free and open-source script. A simple action that could make a substantial 
 
 #### 之前的视频全都被举报下架了，审核也盯上我了，我近期不会发布明示脚本的视频，有问题可以私聊我
 
-[个人主页](https://space.bilibili.com/350438467)
-
 Q:这个项目还存在哪些问题，没有实现哪些功能？  
 A:好多好多，我只能实现简单的一架飞机反复挂机，以及自动研发。并且我还在测试，不清楚有哪些BUG。  
 如果你发现了一些问题，请到BiliBili视频底下进行评论，我会尽可能的想办法修复（我尽量吧）
